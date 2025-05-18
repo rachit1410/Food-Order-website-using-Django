@@ -19,6 +19,7 @@ class Seller(User, models.Model):
     phone_number = models.CharField(max_length=100)
     company_name = models.CharField(max_length=100)
     address = models.ForeignKey(Address, related_name="seller", on_delete=models.CASCADE)
+    is_seller = models.BooleanField(default=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['gst_number', 'phone_number', 'company_name']
 
@@ -33,6 +34,7 @@ class Customer(User, models.Model):
     phone_number = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     address = models.ForeignKey(Address, related_name="customer", on_delete=models.SET_NULL, null=True, blank=True)
+    is_seller = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone_number', 'name']
 
