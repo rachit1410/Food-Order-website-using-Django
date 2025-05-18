@@ -23,6 +23,17 @@ class Category(Base):
         verbose_name = "Catagorie"
 
 
+class SubCategory(Base):
+    category = models.ForeignKey(Category, related_name="sub_category", on_delete=models.CASCADE)
+    sub_category = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.sub_category
+
+    class Meta:
+        verbose_name = "Subcategorie"
+
+
 class Brand(Base):
     brand = models.CharField(max_length=100)
 
@@ -34,6 +45,19 @@ class Images(Base):
     image = models.ImageField(upload_to="item_images")
 
 
+class QuantityUnit(Base):
+    unit = models.CharField(max_length=4, null=True, blank=True)
+
+    def __str__(self):
+        return self.unit
+
+
+class QuantityBundle(Base):
+    quantity = models.IntegerField(default=1)
+    quantity_unit = models.ForeignKey(QuantityUnit, related_name="unit_bundle", on_delete=models.CASCADE)
+    no_of_bundles = models.IntegerField(default=1)
+
+
 class Item(Base):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="myitems")
     item_name = models.CharField(max_length=100)
@@ -42,7 +66,7 @@ class Item(Base):
     item_discount_persentage = models.IntegerField(default=0)
     item_category = models.ForeignKey(Category, related_name="items", on_delete=models.SET_NULL, null=True, blank=True)
     item_Brand = models.ForeignKey(Category, related_name="brand_items", on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    quantity_bundels = models.ForeignKey(QuantityBundle, related_name="bundle_item", on_delete=models.SET_NULL, null=True, blank=True)
     item_images = models.ForeignKey(Images, related_name="image_item", on_delete=models.SET_NULL, null=True, blank=True)
 
 
@@ -55,7 +79,7 @@ class Reviews(Base):
 class Cart(Base):
     customer = models.ForeignKey(Customer, related_name="mycart", on_delete=models.CASCADE)
     items = models.ForeignKey(Item, related_name="carts", on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=True)
+    item_quantity = models.FloatField(default="1.00")
     total_price = models.FloatField(default=0.00)
 
     def __str__(self):
@@ -85,3 +109,8 @@ class CustomerOrder(Base):
 
     def __str__(self):
         return f"order of {self.customer.name}"
+
+
+class Collection(Base):
+    collection_name = models.CharField(max_length=100)
+    items = models.ManyToManyField(Item, related_name="item_collections")

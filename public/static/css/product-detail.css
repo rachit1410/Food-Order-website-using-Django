@@ -74,7 +74,7 @@ body {
         .product-price span {
             font-size: 30px;
             font-weight: 700;
-            color: #e44d26;
+            color: #7aee80;
             margin-right: 10px;
         }
         .product-price del {
@@ -156,8 +156,8 @@ body {
         }
         .add-to-cart {
             padding: 15px 30px;
-            background-color: #e44d26;
-            color: white;
+            background-color: #7aee80;
+            color: rgb(0, 0, 0);
             border: none;
             border-radius: 8px;
             font-size: 18px;
@@ -168,14 +168,14 @@ body {
             margin-bottom: 15px;
         }
         .add-to-cart:hover {
-            background-color: #c83e1b;
+            background-color: #7aee80;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .add-to-favorites {
             padding: 12px 30px;
             background-color: #fff;
-            color: #e44d26;
-            border: 2px solid #e44d26;
+            color: #7aee80;
+            border: 2px solid #7aee80;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 500;
@@ -187,7 +187,7 @@ body {
             justify-content: center;
         }
         .add-to-favorites:hover {
-            background-color: #f8f8f8;
+            background-color: #7aee80;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .add-to-favorites i {
@@ -250,3 +250,8 @@ body {
                 font-size: 16px;
             }
         }
+@media (max-width: 992px) {
+    .header .row {
+        justify-content: space-between;
+    }
+}

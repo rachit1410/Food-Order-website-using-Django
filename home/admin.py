@@ -9,7 +9,8 @@ from home.models import (
     Cart,
     WishList,
     Status,
-    CustomerOrder
+    CustomerOrder,
+    SubCategory
 )
 
 
@@ -22,3 +23,4 @@ admin.site.register(Cart)
 admin.site.register(WishList)
 admin.site.register(Status)
 admin.site.register(CustomerOrder)
+admin.site.register(SubCategory)

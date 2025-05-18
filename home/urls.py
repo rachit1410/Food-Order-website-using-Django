@@ -14,6 +14,6 @@ urlpatterns = [
     path("about-us/", about_us, name="about-us"),
     path("contact-us/", contact_us, name="contact-us"),
     path("item-detail/<pk>/", item_detail, name="item-detail"),
-    path("search-filter/", search_filter, name="search_-ilter"),
+    path("search-filter/", search_filter, name="search_filter"),
     path("check-out/<pk>/", check_out, name="check-out"),
 ]

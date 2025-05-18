@@ -5,6 +5,83 @@
 {% block title %}Item | Details{% endblock %}
 
 {% block content %}
+
+    <header>
+  <div class="container-fluid">
+    <div class="row py-3 border-bottom align-items-center">
+      <!-- Logo Column -->
+      <div class="col-sm-4 col-lg-3 text-center text-sm-start">
+        <div class="main-logo">
+          <a href="{% url "home" %}">
+            <img src="{% static '/images/logo.png'%}" alt="logo" class="img-fluid">
+          </a>
+        </div>
+      </div>
+
+      <!-- Search Column -->
+      <div class="col-sm-6 col-lg-5 d-none d-lg-block">
+        <div class="search-bar row bg-light p-2 my-2 rounded-4">
+          <div class="col-md-4 d-none d-md-block">
+            <select class="form-select border-0 bg-transparent">
+              <option>All Categories</option>
+                  <option>Groceries</option>
+                  <option>Drinks</option>
+                  <option>Chocolates</option>
+            </select>
+          </div>
+          <div class="col-md-7">
+            <form id="search-form" class="text-center" action="index.html" method="post">
+              <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
+            </form>
+          </div>
+          <div class="col-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Icons/Cart Column -->
+      <div class="col-sm-4 col-lg-4 d-flex justify-content-end gap-3 align-items-center">
+        <div class="support-box text-end d-none d-xl-block">
+          <span class="fs-6 text-muted">For Support?</span>
+          <h5 class="mb-0">+980-34984089</h5>
+        </div>
+
+        <ul class="d-flex justify-content-end list-unstyled m-0">
+          <li>
+                <a href="#" class="rounded-circle bg-light p-2 mx-1">
+                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="rounded-circle bg-light p-2 mx-1">
+                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
+                </a>
+              </li>
+              <li class="d-lg-none">
+                <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cart"></use></svg>
+                </a>
+              </li>
+              <li class="d-lg-none">
+                <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSearch" aria-controls="offcanvasSearch">
+                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#search"></use></svg>
+                </a>
+              </li>
+        </ul>
+
+        <div class="cart text-end d-none d-lg-block">
+          <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button">
+            <span class="fs-6 text-muted">Your Cart</span>
+            <span class="cart-total fs-5 fw-bold">$1290.00</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
     <div class="container">
         <div class="product-details-container">
             <div class="product-images">
@@ -33,34 +110,21 @@
                     <del>$160.00</del>
                     <span>Save 23%</span>
                 </div>
-                <p class="product-availability">28 viewing right now | Only 3 Item(s) left in stock</p>
-                <div class="product-colors">
-                    <h3>Color</h3>
-                    <div class="color-options">
-                        <div class="color-option active" data-color="#f5f5f5"></div>
-                        <div class="color-option" data-color="#222"></div>
-                        <div class="color-option" data-color="#8b4513"></div>
-                    </div>
-                </div>
+                <p class="product-availability">Only 3 Item(s) left in stock</p>
+
                 <div class="product-sizes">
-                    <h3>Select Size</h3>
+                    <h3>Select quantity</h3>
                     <div class="size-options">
-                        <div class="size-option" data-size="UK 6.5">UK 6.5</div>
-                        <div class="size-option" data-size="UK 7">UK 7</div>
-                        <div class="size-option" data-size="UK 7.5">UK 7.5</div>
-                        <div class="size-option" data-size="UK 8">UK 8</div>
-                        <div class="size-option" data-size="UK 8.5">UK 8.5</div>
-                        <div class="size-option" data-size="UK 9">UK 9</div>
-                        <div class="size-option" data-size="UK 9.5">UK 9.5</div>
-                        <div class="size-option" data-size="UK 10">UK 10</div>
-                        <div class="size-option" data-size="UK 10.5">UK 10.5</div>
-                        <div class="size-option" data-size="UK 11">UK 11</div>
-                        <div class="size-option" data-size="UK 11.5">UK 11.5</div>
+                        <div class="size-option" data-size="UK 6.5">100g</div>
+                        <div class="size-option" data-size="UK 7">250g</div>
+                        <div class="size-option" data-size="UK 7.5">500g</div>
+                        <div class="size-option" data-size="UK 8">1kg</div>
+                        <div class="size-option" data-size="UK 8.5">5kg</div>
+                        <div class="size-option" data-size="UK 9">10kg</div>
                     </div>
-                    <a href="#" class="size-guide">Size guide</a>
                 </div>
-                <button class="add-to-cart btn btn-danger">Add to Cart</button>
-                <button class="add-to-favorites btn btn-outline-danger">
+                <button class="add-to-cart btn btn-light">Add to Cart</button>
+                <button class="add-to-favorites btn btn-outline-light">
                     <i class="far fa-heart"></i>
                     Favorite
                 </button>
