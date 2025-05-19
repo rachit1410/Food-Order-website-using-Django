@@ -21,5 +21,25 @@ def search_filter(request):
     return render(request, "home/search_filter.html")
 
 
-def check_out(request, pk):
+def check_out(request):
     return render(request, "home/check_out.html")
+
+
+def card_pay(request):
+    return render(request, "home/card-pay.html")
+
+
+def upi_pay(request):
+    return render(request, "home/upi-pay.html")
+
+
+def cart(request):
+    return render(request, "home/cart.html")
+
+
+def thank(request):
+    return render(request, "home/thankyou.html")
+
+
+def not_found(request):
+    return render(request, "404.html")

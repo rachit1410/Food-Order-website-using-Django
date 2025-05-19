@@ -1,0 +1,60 @@
+        .bg-light-yellow-gradient {
+            background-image: linear-gradient(to bottom, #fef08a, #fde68a); /* Tailwind's amber-100 and amber-200 */
+        }
+
+        .bg-light-blue-gradient {
+            background-image: linear-gradient(to bottom, #e0f2fe, #d1f3ff);  /* Tailwind's cyan-100 and cyan-200 */
+        }
+
+        .text-light-blue {
+             color: #67e8f9; /* Tailwind's cyan-300 */
+        }
+
+        .border-light-blue {
+            border-color: #a5f3fc; /* Tailwind's cyan-200 */
+        }
+
+        .quantity-button {
+            width: 2.5rem; /* 40px */
+            height: 2.5rem; /* 40px */
+            border-radius: 9999px; /* rounded-full */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .quantity-input {
+            width: 4rem; /* 64px */
+            text-align: center;
+            border: 1px solid #e5e7eb; /* gray-200 */
+            border-radius: 0.375rem; /* rounded-md */
+            margin: 0 0.5rem; /* mx-2 */
+        }
+
+         .dark .quantity-input {
+            border-color: #4b5563;  /* Dark mode border color */
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .dark .quantity-button {
+            color: #f8fafc;
+        }
+
+        .dark .text-gray-700{
+            color: #d1d5db;
+        }
+
+        .dark .text-gray-900{
+            color: #f9fafb;
+        }
+
+        .dark .bg-white {
+            background-color: #374151;
+        }
+
+        .dark .border-gray-200 {
+            border-color: #4b5563;
+        }

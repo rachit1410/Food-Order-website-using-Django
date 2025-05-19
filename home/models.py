@@ -13,8 +13,13 @@ class Base(models.Model):
         abstract = True
 
 
+class Images(Base):
+    image = models.ImageField(upload_to="item_images")
+
+
 class Category(Base):
     category = models.CharField(max_length=100)
+    category_logo = models.OneToOneField(Images, related_name="catagory_logo_of", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.category
@@ -41,10 +46,6 @@ class Brand(Base):
         return self.category
 
 
-class Images(Base):
-    image = models.ImageField(upload_to="item_images")
-
-
 class QuantityUnit(Base):
     unit = models.CharField(max_length=4, null=True, blank=True)
 
@@ -58,10 +59,18 @@ class QuantityBundle(Base):
     no_of_bundles = models.IntegerField(default=1)
 
 
+class KeyFeatures(Base):
+    feature = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.feature
+
+
 class Item(Base):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="myitems")
     item_name = models.CharField(max_length=100)
     item_description = models.TextField()
+    item_features = models.ForeignKey(KeyFeatures, related_name="feature_of", on_delete=models.SET_NULL, blank=True, null=True)
     item_price = models.FloatField(default=1)
     item_discount_persentage = models.IntegerField(default=0)
     item_category = models.ForeignKey(Category, related_name="items", on_delete=models.SET_NULL, null=True, blank=True)
@@ -114,3 +123,4 @@ class CustomerOrder(Base):
 class Collection(Base):
     collection_name = models.CharField(max_length=100)
     items = models.ManyToManyField(Item, related_name="item_collections")
+    collection_logo = models.OneToOneField(Images, related_name="collection_logo_of", on_delete=models.SET_NULL, null=True, blank=True)

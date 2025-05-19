@@ -6,8 +6,12 @@ from home.views import (
     item_detail,
     search_filter,
     check_out,
+    cart,
+    upi_pay,
+    card_pay,
+    thank,
+    not_found,
 )
-
 
 urlpatterns = [
     path("", home, name="home"),
@@ -15,5 +19,10 @@ urlpatterns = [
     path("contact-us/", contact_us, name="contact-us"),
     path("item-detail/<pk>/", item_detail, name="item-detail"),
     path("search-filter/", search_filter, name="search_filter"),
-    path("check-out/<pk>/", check_out, name="check-out"),
+    path("check-out/", check_out, name="check-out"),
+    path("my-cart/", cart, name="my-cart"),
+    path("upi-gateway/", upi_pay, name="upi-gateway"),
+    path("card-gateway/", card_pay, name="card-gateway"),
+    path("thank-you/", thank, name="thank-you"),
+    path("404/", not_found, name="404"),
 ]

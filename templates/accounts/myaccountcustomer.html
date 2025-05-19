@@ -1,0 +1,208 @@
+
+{% extends "base.html" %}
+{% load static %}
+    {% block title %}My Account{% endblock %}
+    {% block style %}
+    <meta name="mobile-web-app-capable" content="yes">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
+    <link rel="stylesheet" href="{% static "/css/account-customer.css" %}">
+    {% endblock %}
+    
+{% block content %}
+
+  <header>
+    <div class="container-fluid">
+      <div class="row py-3 border-bottom align-items-center">
+        <!-- Logo Column -->
+        <div class="col-sm-4 col-lg-3 text-center text-sm-start">
+          <div class="main-logo">
+            <a href="{% url "home" %}">
+              <img src="{% static '/images/logo.png'%}" alt="logo" class="img-fluid">
+            </a>
+          </div>
+        </div>
+
+        <!-- Search Column -->
+        <div class="col-sm-6 col-lg-5 d-none d-lg-block">
+          <div class="search-bar row bg-light p-2 my-2 rounded-4">
+            <div class="col-md-4 d-none d-md-block">
+              <select class="form-select border-0 bg-transparent">
+                <option>All Categories</option>
+                    <option>Groceries</option>
+                    <option>Drinks</option>
+                    <option>Chocolates</option>
+              </select>
+            </div>
+            <div class="col-md-7">
+              <form id="search-form" class="text-center" action="index.html" method="post">
+                <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
+              </form>
+            </div>
+            <div class="col-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side Icons/Cart Column -->
+        <div class="col-sm-4 col-lg-4 d-flex justify-content-end gap-3 align-items-center">
+          <div class="support-box text-end d-none d-xl-block">
+            <span class="fs-6 text-muted">For Support?</span>
+            <h5 class="mb-0">+980-34984089</h5>
+          </div>
+
+          <ul class="flex justify-end items-center space-x-2 list-none m-0">
+    <li>
+        <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
+        </a>
+    </li>
+    <li>
+        <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
+        </a>
+    </li>
+    </ul>
+        </div>
+      </div>
+    </div>
+</header>
+  <main class="bg-gray-100 font-inter">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">My Account</h1>
+
+        <div class="w-full">
+            <div class="flex space-x-4 mb-6">
+                <button
+                    id="profile-tab"
+                    class="tab tab-active px-4 py-2 rounded-lg font-semibold text-gray-800 bg-gray-100 border border-gray-200 shadow-md"
+                    onclick="switchTab('profile')"
+                >
+                    <i data-lucide="user" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/account-svgrepo-com.svg" %}" alt="account-svg"></i>
+                    Profile
+                </button>
+                <button
+                    id="orders-tab"
+                    class="tab tab-inactive px-4 py-2 rounded-lg font-semibold text-gray-600 bg-white border border-gray-200 shadow-md hover:bg-gray-50"
+                    onclick="switchTab('orders')"
+                >
+                    <i data-lucide="shopping-cart" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/order-svgrepo-com.svg" %}" alt="account-svg"></i>
+                    Orders
+                </button>
+                <button
+                    id="settings-tab"
+                    class="tab tab-inactive px-4 py-2 rounded-lg font-semibold text-gray-600 bg-white border border-gray-200 shadow-md hover:bg-gray-50"
+                    onclick="switchTab('settings')"
+                >
+                    <i data-lucide="settings" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/settings-svgrepo-com (1).svg" %}" alt="account-svg"></i>
+                    Settings
+                </button>
+                <a
+                    style="text-decoration: none; color: rgb(82, 229, 240);"
+                    href="{% url "my-cart" %}"
+                    class=" px-4 py-2 rounded-lg font-semibold text-gray-600 bg-white border border-gray-200 shadow-md hover:bg-yellow-50">
+                    <i data-lucide="cart" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/cart-shopping-svgrepo-com.svg" %}" alt="account-svg"></i>
+                    My Cart
+                </a>
+            </div>
+
+            <div id="profile-content" class="tab-content bg-white border border-gray-200 rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Profile Information</h2>
+                <p class="text-gray-500 mb-6">Manage your personal information.</p>
+
+                <div id="profile-edit-view" class="space-y-4">
+                    <div class="flex flex-col">
+                        <label for="first-name" class="text-gray-700 font-medium">First Name</label>
+                        <input type="text" id="first-name" value="John" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="last-name" class="text-gray-700 font-medium">Last Name</label>
+                        <input type="text" id="last-name" value="Doe" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="email" class="text-gray-700 font-medium">Email</label>
+                        <input type="email" id="email" value="john.doe@example.com" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="phone" class="text-gray-700 font-medium">Phone</label>
+                        <input type="tel" id="phone" value="123-456-7890" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="city" class="text-gray-700 font-medium">City</label>
+                        <input type="text" id="city"  class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="state" class="text-gray-700 font-medium">State</label>
+                        <input type="text" id="state"  class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="country" class="text-gray-700 font-medium">Country</label>
+                        <input type="text" id="country"  class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button id="edit-profile-button" class="bg-yellow-gradient hover:bg-yellow-gradient text-gray-900 font-bold py-2 px-4 rounded-md shadow-md">Edit Profile</button>
+                        <button id="save-profile-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md shadow-md ml-2 hidden">Save Profile</button>
+                        <button id="cancel-profile-button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-md ml-2 hidden">Cancel</button>
+                    </div>
+                </div>
+
+                <div id="profile-display-view" class="space-y-4">
+                    <div>
+                        <span class="font-semibold text-gray-700">First Name:</span> <span class="text-gray-900">John</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-gray-700">Last Name:</span> <span class="text-gray-900">Doe</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-gray-700">Email:</span> <span class="text-gray-500">john.doe@example.com</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-gray-700">Phone:</span> <span class="text-gray-900">123-456-7890</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-gray-700">City:</span> <span class="text-gray-900">Anytown</span>
+                    </div>
+                     <div>
+                        <span class="font-semibold text-gray-700">State:</span> <span class="text-gray-900">AnyState</span>
+                    </div>
+                     <div>
+                        <span class="font-semibold text-gray-700">Country:</span> <span class="text-gray-900">USA</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="orders-content" class="tab-content bg-white border border-gray-200 rounded-lg shadow-md p-6 hidden">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Your Orders</h2>
+                <p class="text-gray-700">This section will display the user's order history.</p>
+                <p class="text-gray-700">(Order history data would be fetched from a database in a real application.)</p>
+            </div>
+
+            <div id="settings-content" class="tab-content bg-white border border-gray-200 rounded-lg shadow-md p-6 hidden">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Settings</h2>
+                <p class="text-gray-500 mb-6">Manage your account settings.</p>
+
+                <div class="space-y-4">
+                    <div class="flex flex-col">
+                        <label for="new-password" class="text-gray-700 font-medium">New Password</label>
+                        <input type="password" id="new-password" placeholder="Enter new password" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="confirm-password" class="text-gray-700 font-medium">Confirm New Password</label>
+                        <input type="password" id="confirm-password" placeholder="Confirm new password" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button id="change-password-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md">Change Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static "/js/account-customer.js" %}"></script>
+</main>
+
+
+{% endblock %}

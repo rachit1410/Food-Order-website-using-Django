@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+    UPI gateway
+{% endblock %}
+
+{% block style %}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
+    <link rel="stylesheet" href="{% static "/css/card.css" %}">
+{% endblock %}
+
+{% block content %}
+
+  <header>
+    <div class="container-fluid">
+      <div class="row py-3 border-bottom align-items-center">
+        <!-- Logo Column -->
+        <div class="col-sm-4 col-lg-3 text-center text-sm-start">
+          <div class="main-logo">
+            <a href="{% url "home" %}">
+              <img src="{% static '/images/logo.png'%}" alt="logo" class="img-fluid">
+            </a>
+          </div>
+        </div>
+
+        <!-- Search Column -->
+        <div class="col-sm-6 col-lg-5 d-none d-lg-block">
+          <div class="search-bar row bg-light p-2 my-2 rounded-4">
+            <div class="col-md-4 d-none d-md-block">
+              <select class="form-select border-0 bg-transparent">
+                <option>All Categories</option>
+                    <option>Groceries</option>
+                    <option>Drinks</option>
+                    <option>Chocolates</option>
+              </select>
+            </div>
+            <div class="col-md-7">
+              <form id="search-form" class="text-center" action="index.html" method="post">
+                <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
+              </form>
+            </div>
+            <div class="col-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side Icons/Cart Column -->
+        <div class="col-sm-4 col-lg-4 d-flex justify-content-end gap-3 align-items-center">
+          <div class="support-box text-end d-none d-xl-block">
+            <span class="fs-6 text-muted">For Support?</span>
+            <h5 class="mb-0">+980-34984089</h5>
+          </div>
+
+          <ul class="flex justify-end items-center space-x-2 list-none m-0">
+    <li>
+        <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
+        </a>
+    </li>
+    <li>
+        <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
+        </a>
+    </li>
+    </ul>
+        </div>
+      </div>
+    </div>
+</header>
+
+<main class="font-inter">
+    <div class="container mx-auto mt-8 p-4">
+        <h1 class="text-3xl font-semibold text-gray-900 text-center mb-6">Debit/Credit Card Payment</h1>
+
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Enter Card Details</h2>
+            <form id="card-payment-form" class="space-y-4">
+                <div>
+                    <label for="card-number" class="block text-gray-700 text-sm font-bold mb-2">Card Number</label>
+                    <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" />
+                    <div id="card-number-error" class="text-red-500 text-xs italic mt-1 hidden"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="expiry-date" class="block text-gray-700 text-sm font-bold mb-2">Expiry Date</label>
+                        <input type="text" id="expiry-date" placeholder="MM/YY" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" />
+                        <div id="expiry-date-error" class="text-red-500 text-xs italic mt-1 hidden"></div>
+                    </div>
+                    <div>
+                        <label for="cvv" class="block text-gray-700 text-sm font-bold mb-2">CVV</label>
+                        <input type="text" id="cvv" placeholder="XXX" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" />
+                        <div id="cvv-error" class="text-red-500 text-xs italic mt-1 hidden"></div>
+                    </div>
+                </div>
+                <div>
+                    <label for="cardholder-name" class="block text-gray-700 text-sm font-bold mb-2">Cardholder Name</label>
+                    <input type="text" id="cardholder-name" placeholder="John Doe" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" />
+                    <div id="cardholder-name-error" class="text-red-500 text-xs italic mt-1 hidden"></div>
+                </div>
+
+                <div class="flex items-center mb-4">
+                    <input type="checkbox" id="save-card" class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                    <label for="save-card" class="ml-2 text-gray-700 text-sm font-medium">Save this card for future payments</label>
+                </div>
+
+                <div class="flex justify-center">
+                    <button type="button" onclick="validateCardDetails()" class="bg-light-blue-gradient hover:bg-blue-300 text-gray-900 font-semibold py-2 px-6 rounded-md transition duration-300 ease-in-out">
+                        Pay Now
+                    </button>
+                </div>
+            </form>
+
+            <div id="payment-message" class="mt-6 text-center font-semibold text-lg hidden">
+                <p id="payment-message-text" class="text-gray-900"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static "/js/card.js" %}">
+
+    </script>
+</main>
+
+
+
+{% endblock %}

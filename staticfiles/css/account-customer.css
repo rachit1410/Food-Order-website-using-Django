@@ -1,0 +1,24 @@
+ .tab-active {
+    background-color: #f3f4f6; /* Tailwind's gray-100 */
+    color: #1f2937; /* Tailwind's gray-800 */
+}
+.tab-inactive {
+    background-color: white;
+    color: #4b5563; /* Tailwind's gray-600 */
+}
+.tab-active.dark {
+    background-color: #374151; /* Tailwind's gray-800 */
+    color: #f9fafb; /* Tailwind's gray-50 */
+}
+.tab-inactive.dark {
+    background-color: #1f2937; /* Tailwind's gray-800 */
+    color: #d1d5db; /* Tailwind's gray-300 */
+}
+
+.bg-yellow-gradient {
+    background-image: linear-gradient(to bottom right, #fef08a, #fde047); /* Tailwind's amber-100 and amber-300 */
+}
+
+.hover\:bg-yellow-gradient:hover {
+    background-image: linear-gradient(to bottom right, #fcd34d, #facc15); /* Lighter shade on hover */
+}

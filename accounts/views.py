@@ -11,3 +11,7 @@ def register_seller(request):
 
 def login(request):
     return render(request, "accounts/login.html")
+
+
+def my_account(request):
+    return render(request, "accounts/myaccountcustomer.html")
