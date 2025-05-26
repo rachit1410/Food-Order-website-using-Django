@@ -29,21 +29,19 @@ class Category(Base):
 
 
 class SubCategory(Base):
-    category = models.ForeignKey(Category, related_name="sub_category", on_delete=models.CASCADE)
-    sub_category = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="catagory_sub")
+    sub_catagory_name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.sub_category
-
-    class Meta:
-        verbose_name = "Subcategorie"
+        return f" {self.category.category}-{self.sub_catagory_name}"
 
 
 class Brand(Base):
     brand = models.CharField(max_length=100)
+    brand_logo = models.ForeignKey(Images, related_name="brand_logo", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return self.category
+        return self.brand
 
 
 class QuantityUnit(Base):

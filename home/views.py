@@ -2,7 +2,13 @@ from django.shortcuts import render
 
 
 def home(request):
-    return render(request, "home/home.html")
+    is_logged_in = request.user.is_authenticated
+
+    context = {
+        'is_logged_in': is_logged_in
+    }
+
+    return render(request, "home/home.html", context)
 
 
 def about_us(request):

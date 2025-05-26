@@ -26,7 +26,6 @@ function switchTab(tabId) {
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
 
             const editProfileButton = document.getElementById('edit-profile-button');
             const saveProfileButton = document.getElementById('save-profile-button');

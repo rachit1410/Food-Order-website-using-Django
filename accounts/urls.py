@@ -2,13 +2,15 @@ from django.urls import path
 from accounts.views import (
     register_customer,
     register_seller,
-    login,
+    login_view,
+    logout_view,
     my_account,
 )
 
 urlpatterns = [
     path('register-seller/', register_seller, name="register-seller"),
     path('register-customer/', register_customer, name="register-customer"),
-    path('login/', login, name="login"),
+    path('login/', login_view, name="login"),
     path('my-account/', my_account, name="my-account"),
+    path('logout/', logout_view, name="logout"),
 ]

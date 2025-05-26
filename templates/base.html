@@ -28,11 +28,13 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static '/css/product-detail.css'%}">
+    <link rel="stylesheet" href="{% static "css/alert.css" %}">
 
   </head>
     
 </head>
 <body>
+    <script src="{% static "/js/alert.js" %}"></script>
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
       <defs>
         <symbol xmlns="http://www.w3.org/2000/svg" id="link" viewBox="0 0 24 24">
@@ -83,8 +85,17 @@
       </defs>
     </svg>
 
-  {% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 
-  
+    <div class="alert-container alert-hidden" id="myAlertBar">
+        <div class="alert-bar bg-blue-500 text-white">
+            <svg class="w-6 h-6 mr-3 alert-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2h2a1 1 0 000-2H9zm2 4a1 1 0 10-2 0 1 1 0 002 0z" clip-rule="evenodd"></path>
+            </svg>
+            <p class="flex-grow text-sm sm:text-base alert-message">This is a sample alert message! It will disappear automatically.</p>
+            <button id="closeAlert" class="close-button">&times;</button>
+        </div>
+    </div>
+
 </body>
 </html>

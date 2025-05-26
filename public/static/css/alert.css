@@ -1,0 +1,48 @@
+.alert-container {
+            position: fixed; /* Fixed position relative to the viewport */
+            bottom: 1rem; /* 16px from the bottom */
+            right: 1rem; /* 16px from the right */
+            z-index: 1000; /* Ensure it's above other content */
+            max-width: 300px; /* Max width for responsiveness */
+        }
+
+        /* Specific styles for the alert bar itself */
+        .alert-bar {
+            display: flex; /* Use flexbox for alignment of icon, text, and close button */
+            align-items: center; /* Vertically align items */
+            padding: 1rem; /* Padding inside the alert bar */
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transition for showing/hiding */
+        }
+
+        /* Styles for the close button */
+        .close-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem; /* Larger font size for the 'x' */
+            line-height: 1;
+            margin-left: 1rem; /* Space between text and close button */
+            color: inherit; /* Inherit color from parent for consistency */
+            opacity: 0.7; /* Slightly transparent */
+            transition: opacity 0.2s ease-in-out; /* Smooth transition on hover */
+        }
+
+        .close-button:hover {
+            opacity: 1; /* Full opacity on hover */
+        }
+
+        /* Hide the alert bar by default, show with JavaScript */
+        .alert-hidden {
+            opacity: 0;
+            transform: translateY(20px); /* Start slightly below and move up */
+            pointer-events: none; /* Prevent interaction when hidden */
+        }
+
+        /* Show the alert bar */
+        .alert-visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto; /* Allow interaction when visible */
+        }

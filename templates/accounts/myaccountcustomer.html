@@ -18,7 +18,7 @@
         <div class="col-sm-4 col-lg-3 text-center text-sm-start">
           <div class="main-logo">
             <a href="{% url "home" %}">
-              <img src="{% static '/images/logo.png'%}" alt="logo" class="img-fluid">
+              <img src="{% static '/images/newlogo2.png'%}" alt="logo" class="img-fluid">
             </a>
           </div>
         </div>
@@ -113,65 +113,69 @@
                 <h2 class="text-xl font-semibold text-gray-900 mb-4">Profile Information</h2>
                 <p class="text-gray-500 mb-6">Manage your personal information.</p>
 
-                <div id="profile-edit-view" class="space-y-4">
-                    <div class="flex flex-col">
-                        <label for="first-name" class="text-gray-700 font-medium">First Name</label>
-                        <input type="text" id="first-name" value="John" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                <form method="post">
+                    {% csrf_token %}
+                    <div id="profile-edit-view" class="space-y-4">
+                        <div class="flex flex-col">
+                            <label for="first-name" class="text-gray-700 font-medium">Full Name</label>
+                            <input type="text" name="name" id="first-name" value="{{profile.name}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="last-name" class="text-gray-700 font-medium">username</label>
+                            <input type="text" id="last-name" value="{{profile.username}}" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="email" class="text-gray-700 font-medium">Email</label>
+                            <input type="email" id="email" value="{{profile.email}}" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="phone" class="text-gray-700 font-medium">Phone</label>
+                            <input type="tel" id="phone" name="phone_number" value="{{profile.phone_number}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex justify-end mt-6">
+                            <button id="edit-profile-button" class="bg-yellow-gradient hover:bg-yellow-gradient text-gray-900 font-bold py-2 px-4 rounded-md shadow-md" type="submit">Edit Profile</button>
+                        </div>
                     </div>
-                    <div class="flex flex-col">
-                        <label for="last-name" class="text-gray-700 font-medium">Last Name</label>
-                        <input type="text" id="last-name" value="Doe" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                </form>
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Address</h2>
+                <p class="text-gray-500 mb-6">Keep your address updated for better delivery services.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div id="profile-edit-view" class="space-y-4">
+                        <div class="flex flex-col">
+                            <label for="postal_code" class="text-gray-700 font-medium">Postal code</label>
+                            <input type="text" id="postal_code" name="postal_code" value="{{profile.address.postal_code}}"  class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="nearby_place" class="text-gray-700 font-medium">Landmark <span style="color: red"># optional</span></label>
+                            <input type="text" id="nearby_place" name="nearby_place" value="{{profile.address.nearby_place}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="colony" class="text-gray-700 font-medium">Colony name, street no., street name</label>
+                            <input type="text" id="colony" name="colony" value="{{profile.address.colony}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="city" class="text-gray-700 font-medium">City/Village</label>
+                            <input type="text" id="city" name="city" value="{{profile.address.city}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="state" class="text-gray-700 font-medium">State</label>
+                            <input type="text" id="state" name="state" value="{{profile.address.state}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex flex-col">
+                            <select id="country" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select Country</option>
+                                <option value="USA" {% if profile.address.country == "India" %}selected{% endif %}>India</option>
+                                <option value="CAN" {% if profile.address.country == "USA" %}selected{% endif %}>USA</option>
+                                <option value="GBR" {% if profile.address.country == "China" %}selected{% endif %}>China</option>
+                                <option value="IND" {% if profile.address.country == "Russia" %}selected{% endif %}>Russia</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-end mt-6">
+                            <button id="edit-address-button" type="submit" class="bg-yellow-gradient hover:bg-yellow-gradient text-gray-900 font-bold py-2 px-4 rounded-md shadow-md">Edit Address</button>
+                        </div>
                     </div>
-                    <div class="flex flex-col">
-                        <label for="email" class="text-gray-700 font-medium">Email</label>
-                        <input type="email" id="email" value="john.doe@example.com" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="phone" class="text-gray-700 font-medium">Phone</label>
-                        <input type="tel" id="phone" value="123-456-7890" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="city" class="text-gray-700 font-medium">City</label>
-                        <input type="text" id="city"  class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="state" class="text-gray-700 font-medium">State</label>
-                        <input type="text" id="state"  class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="country" class="text-gray-700 font-medium">Country</label>
-                        <input type="text" id="country"  class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
-                    </div>
-                    <div class="flex justify-end mt-6">
-                        <button id="edit-profile-button" class="bg-yellow-gradient hover:bg-yellow-gradient text-gray-900 font-bold py-2 px-4 rounded-md shadow-md">Edit Profile</button>
-                        <button id="save-profile-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md shadow-md ml-2 hidden">Save Profile</button>
-                        <button id="cancel-profile-button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-md ml-2 hidden">Cancel</button>
-                    </div>
-                </div>
-
-                <div id="profile-display-view" class="space-y-4">
-                    <div>
-                        <span class="font-semibold text-gray-700">First Name:</span> <span class="text-gray-900">John</span>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-gray-700">Last Name:</span> <span class="text-gray-900">Doe</span>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-gray-700">Email:</span> <span class="text-gray-500">john.doe@example.com</span>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-gray-700">Phone:</span> <span class="text-gray-900">123-456-7890</span>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-gray-700">City:</span> <span class="text-gray-900">Anytown</span>
-                    </div>
-                     <div>
-                        <span class="font-semibold text-gray-700">State:</span> <span class="text-gray-900">AnyState</span>
-                    </div>
-                     <div>
-                        <span class="font-semibold text-gray-700">Country:</span> <span class="text-gray-900">USA</span>
-                    </div>
-                </div>
+                </form>
             </div>
 
             <div id="orders-content" class="tab-content bg-white border border-gray-200 rounded-lg shadow-md p-6 hidden">
@@ -185,23 +189,43 @@
                 <p class="text-gray-500 mb-6">Manage your account settings.</p>
 
                 <div class="space-y-4">
-                    <div class="flex flex-col">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="flex flex-col">
                         <label for="new-password" class="text-gray-700 font-medium">New Password</label>
-                        <input type="password" id="new-password" placeholder="Enter new password" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="confirm-password" class="text-gray-700 font-medium">Confirm New Password</label>
-                        <input type="password" id="confirm-password" placeholder="Confirm new password" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
-                    </div>
+                            <input type="password" name="newpassword1" id="new-password" placeholder="Enter new password" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" required />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="confirm-password" class="text-gray-700 font-medium">Confirm New Password</label>
+                            <input type="password" name="newpassword2" id="confirm-password" placeholder="Confirm new password" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" required/>
+                        </div>
+                        <div class="flex justify-start mt-6">
+                            <button id="change-password-button" type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md">Change Password</button>
+                        </div>
+                    </form>
                     <div class="flex justify-end mt-6">
-                        <button id="change-password-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md">Change Password</button>
+                        <a href="{% url "logout" %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-md text-decoration-none">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+
+
     <script src="{% static "/js/account-customer.js" %}"></script>
+    <script id="django-messages-data" type="application/json">
+        [
+        {% if messages %}
+            {% for message in messages %}
+            {
+                "type": "{{ message.tags }}",
+                "message": "{{ message }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        {% endif %}
+        ]
+    </script>
 </main>
 
 
