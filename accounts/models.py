@@ -21,7 +21,7 @@ class Seller(User):
     gst_number = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=100)
     company_name = models.CharField(max_length=100)
-    is_seller = models.BooleanField(default=True)
+    is_seller = models.BooleanField(default=True, editable=False)
 
     def __str__(self):
         return self.company_name
@@ -34,7 +34,7 @@ class Customer(User):
     phone_number = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     address = models.ForeignKey(Address, related_name="customer", on_delete=models.DO_NOTHING, null=True, blank=True)
-    is_seller = models.BooleanField(default=False)
+    is_seller = models.BooleanField(default=False, editable=False)
 
     class Meta:
         verbose_name = "Customer"

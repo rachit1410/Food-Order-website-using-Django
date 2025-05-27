@@ -13,112 +13,125 @@ class Base(models.Model):
         abstract = True
 
 
-class Images(Base):
-    image = models.ImageField(upload_to="item_images")
-
-
 class Category(Base):
-    category = models.CharField(max_length=100)
-    category_logo = models.OneToOneField(Images, related_name="catagory_logo_of", on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.CharField(max_length=255, unique=True) # Added unique=True
+    
+    class Meta:
+        verbose_name_plural = "Categories" # Corrected verbose_name_plural
 
     def __str__(self):
         return self.category
 
-    class Meta:
-        verbose_name = "Catagorie"
-
 
 class SubCategory(Base):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="catagory_sub")
-    sub_catagory_name = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories") # Changed related_name
+    sub_catagory_name = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('category', 'sub_catagory_name') # Added unique_together for better data integrity
 
     def __str__(self):
-        return f" {self.category.category}-{self.sub_catagory_name}"
+        return f"{self.category.category} - {self.sub_catagory_name}"
 
 
 class Brand(Base):
-    brand = models.CharField(max_length=100)
-    brand_logo = models.ForeignKey(Images, related_name="brand_logo", on_delete=models.SET_NULL, null=True, blank=True)
+    brand = models.CharField(max_length=255, unique=True) # Added unique=True
 
     def __str__(self):
         return self.brand
 
 
-class QuantityUnit(Base):
-    unit = models.CharField(max_length=4, null=True, blank=True)
+class Images(Base):
+    image = models.ImageField(upload_to="item_images")
 
     def __str__(self):
-        return self.unit
-
-
-class QuantityBundle(Base):
-    quantity = models.IntegerField(default=1)
-    quantity_unit = models.ForeignKey(QuantityUnit, related_name="unit_bundle", on_delete=models.CASCADE)
-    no_of_bundles = models.IntegerField(default=1)
-
-
-class KeyFeatures(Base):
-    feature = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.feature
+        return self.image.name if self.image else "No Image"
 
 
 class Item(Base):
-    seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="myitems")
-    item_name = models.CharField(max_length=100)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="my_items") # Changed related_name
+    sku = models.CharField(max_length=255, unique=True) # Added unique=True
+    item_name = models.CharField(max_length=255)
     item_description = models.TextField()
-    item_features = models.ForeignKey(KeyFeatures, related_name="feature_of", on_delete=models.SET_NULL, blank=True, null=True)
     item_price = models.FloatField(default=1)
-    item_discount_persentage = models.IntegerField(default=0)
-    item_category = models.ForeignKey(Category, related_name="items", on_delete=models.SET_NULL, null=True, blank=True)
-    item_Brand = models.ForeignKey(Category, related_name="brand_items", on_delete=models.CASCADE)
-    quantity_bundels = models.ForeignKey(QuantityBundle, related_name="bundle_item", on_delete=models.SET_NULL, null=True, blank=True)
-    item_images = models.ForeignKey(Images, related_name="image_item", on_delete=models.SET_NULL, null=True, blank=True)
+    item_image = models.ForeignKey(Images, related_name="item_primary_image", on_delete=models.SET_NULL, null=True, blank=True) # Changed related_name and on_delete
+    item_discount_percentage = models.IntegerField(default=0)
+    item_category = models.ForeignKey(SubCategory, related_name="items", on_delete=models.SET_NULL, null=True, blank=True)
+    item_brand = models.ForeignKey(Brand, related_name="brand_items", on_delete=models.CASCADE)
+    rating = models.FloatField(default=5.0)
+    quantity = models.CharField(max_length=255) # Consider changing to IntegerField or DecimalField if always numeric
+
+    def __str__(self):
+        return self.item_name
+
+
+class VariantItem(Base):
+    item = models.ForeignKey(Item, related_name="variants", on_delete=models.CASCADE)
+    variant_name = models.CharField(max_length=255)
+    item_image = models.ForeignKey(Images, related_name="variant_image", on_delete=models.SET_NULL, null=True, blank=True) # Changed related_name and on_delete
+    quantity = models.CharField(max_length=255) # Consider changing to IntegerField or DecimalField
+    price = models.FloatField(default=1)
+    sku = models.CharField(max_length=255, unique=True) # Added unique=True
+
+    class Meta:
+        unique_together = ('item', 'variant_name') # Ensures unique variants for an item
+
+    def __str__(self):
+        return f"{self.item.item_name} - {self.variant_name}"
 
 
 class Reviews(Base):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="myitems")
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="my_reviews") # Changed related_name
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="reviews") # Added item foreign key
     stars = models.CharField(max_length=10, choices=STAR_CHOICES)
-    images = models.ForeignKey(Images, related_name="image_by", on_delete=models.SET_NULL, null=True, blank=True)
+    comment = models.TextField(blank=True, null=True) # Added a comment field
+    images = models.ForeignKey(Images, related_name="review_images", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Review by {self.customer.username} for {self.item.item_name}"
 
 
 class Cart(Base):
-    customer = models.ForeignKey(Customer, related_name="mycart", on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, related_name="my_cart", on_delete=models.CASCADE) # Changed related_name
     items = models.ForeignKey(Item, related_name="carts", on_delete=models.CASCADE)
-    item_quantity = models.FloatField(default="1.00")
+    item_quantity = models.FloatField(default=1.00) # Changed default to float
     total_price = models.FloatField(default=0.00)
 
     def __str__(self):
-        return f"cart of {self.customer.name}"
+        return f"Cart of {self.customer.username}"
 
 
 class WishList(Base):
-    customer = models.ForeignKey(Customer, related_name="mywishliat", on_delete=models.CASCADE)
-    items = models.ForeignKey(Item, related_name="wishlister", on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, related_name="my_wishlist", on_delete=models.CASCADE) # Changed related_name
+    items = models.ForeignKey(Item, related_name="wishlisted_by", on_delete=models.CASCADE) # Changed related_name
     availability = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"wishlist of {self.customer.name}"
+        return f"Wishlist of {self.customer.username}"
 
 
 class Status(Base):
-    status = models.CharField(max_length=100)
+    status = models.CharField(max_length=255, unique=True) # Added unique=True
 
     def __str__(self):
         return self.status
 
 
 class CustomerOrder(Base):
-    customer = models.ForeignKey(Customer, related_name="myorders", on_delete=models.CASCADE)
-    items = models.ForeignKey(Item, related_name="orders", on_delete=models.CASCADE)
-    status = models.ForeignKey(Status, related_name='status_order', on_delete=models.SET_NULL, null=True, blank=True)
+    customer = models.ForeignKey(Customer, related_name="my_orders", on_delete=models.CASCADE) # Changed related_name
+    items = models.ManyToManyField(Item, related_name="orders") # Changed to ManyToManyField for multiple items in an order
+    status = models.ForeignKey(Status, related_name='order_status', on_delete=models.SET_NULL, null=True, blank=True)
+    order_date = models.DateTimeField(auto_now_add=True) # Added order_date
+    total_amount = models.FloatField(default=0.00) # Added total_amount
 
     def __str__(self):
-        return f"order of {self.customer.name}"
+        return f"Order {self.uuid} by {self.customer.username}"
 
 
 class Collection(Base):
-    collection_name = models.CharField(max_length=100)
+    collection_name = models.CharField(max_length=255, unique=True) # Added unique=True
     items = models.ManyToManyField(Item, related_name="item_collections")
     collection_logo = models.OneToOneField(Images, related_name="collection_logo_of", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.collection_name
