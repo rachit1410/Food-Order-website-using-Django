@@ -72,9 +72,8 @@ class VariantItem(Base):
     quantity = models.CharField(max_length=255) # Consider changing to IntegerField or DecimalField
     price = models.FloatField(default=1)
     sku = models.CharField(max_length=255, unique=True) # Added unique=True
+    discount_percentage = models.IntegerField(default=0)
 
-    class Meta:
-        unique_together = ('item', 'variant_name') # Ensures unique variants for an item
 
     def __str__(self):
         return f"{self.item.item_name} - {self.variant_name}"

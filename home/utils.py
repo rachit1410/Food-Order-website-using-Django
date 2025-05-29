@@ -19,44 +19,33 @@ from accounts.models import Seller # Assuming Seller is in accounts.models
 # --- Helper Functions ---
 
 def save_image_from_url(image_url):
-    """
-    Downloads an image from a URL and saves it to the Images model.
-    Handles common errors and ensures a valid file extension.
-    """
-    if not image_url:
-        logging.warning("Received empty image URL. Skipping image download.")
-        return None
-
     try:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
         }
-        response = requests.get(image_url, stream=True, headers=headers, timeout=10) # Added timeout
+        response = requests.get(image_url, stream=True, headers=headers)
         response.raise_for_status()
 
-        # Extract filename and extension, ensure a default if none
-        file_name = os.path.basename(image_url).split('?')[0] # Remove query parameters from URL
-        if '.' not in file_name:
-            file_name = "image.jpg" # Default filename if no extension
+        file_name = image_url.split("/")[-1]
+        file_ext = file_name.split(".")[-1]
+        if file_ext not in ['jpg', 'jpeg', 'png', 'gif']:
+            file_name = "image.jpg"
         else:
-            name, ext = os.path.splitext(file_name)
-            if not ext or ext.lower() not in ['.jpg', '.jpeg', '.png', '.gif']:
-                file_name = f"{name}.jpg" # Ensure a valid extension
+            file_name = f"image.{file_ext}"
 
         image_content = BytesIO(response.content)
 
-        img = Images()
-        img.image.save(file_name, File(image_content), save=True) # save=True is default, but explicit
-        logging.info(f"Successfully saved image: {file_name}")
+        img = Images()  # assign item here
+        img.image.save(file_name, File(image_content))
+        img.save()
         return img
 
     except requests.exceptions.RequestException as e:
-        logging.error(f"Error downloading image from {image_url}: {e}")
+        print(f"Error downloading image: {e}")
         return None
     except Exception as e:
-        logging.error(f"Error saving image from {image_url}: {e}")
+        print(f"Error saving image: {e}")
         return None
-
 
 def get_discount(mrp_str, selling_price_str):
     """Calculates discount percentage from MRP and selling price strings."""
@@ -88,7 +77,7 @@ def get_sku(product_name, unique_skus):
     sku = base_sku + ''.join(random.choices(string.digits, k=4))
     while sku in unique_skus:
         sku = base_sku + ''.join(random.choices(string.digits, k=4))
-    unique_skus.add(sku)
+    unique_skus.append(sku)
     return sku
 
 
@@ -100,208 +89,71 @@ def get_description():
 
 # --- Main Data Import Function ---
 
-def bulk_create_items_from_excel(file_path):
-    """
-    Reads item data from an Excel file and bulk creates/updates items, variants, and images.
-    """
-    try:
-        file_df = pd.read_excel(file_path)
-    except FileNotFoundError:
-        logging.error(f"File not found at: {file_path}")
-        return
-    except Exception as e:
-        logging.error(f"Error reading Excel file: {e}")
-        return
-
-    # Pre-fetch common objects to minimize database queries inside the loop
-    try:
-        seller = Seller.objects.get(username="seller") # Ensure this seller exists
-    except Seller.DoesNotExist:
-        logging.error("Seller with username 'seller' not found. Please create this seller first.")
-        return
-
-    # Dictionaries to hold objects for bulk creation and to track created items
-    items_to_create = []
-    variants_data_for_bulk_create = [] # Hold dictionaries of variant data
-    images_to_process = {} # Store image URL -> (item_name, is_variant, obj_sku_or_name)
-    
-    # Store unique SKUs generated to prevent collisions
-    unique_item_skus = set(Item.objects.values_list('sku', flat=True))
-    unique_variant_skus = set(VariantItem.objects.values_list('sku', flat=True))
-
-    BATCH_SIZE = 500 # Increased batch size for potentially better performance
-
-    logging.info(f"Starting bulk creation process with batch size: {BATCH_SIZE}")
-
-    # Use a dictionary to map product names to already created or pending Item objects
-    # This helps in linking variants to the correct parent item
-    item_cache = {} 
-
+def exceltodatabase():
+    file_path = "C:/Users/RD/OneDrive/Documents/Projects/FODE/FODE/BigBasket_Dataset.csv.xlsx"
+    file_df = pd.read_excel(file_path)
+    product_names = []
+    unique_skus = []
     for index, row in file_df.iterrows():
         try:
-            # Get or create Category, SubCategory, Brand - These are relatively few and can be handled
-            # outside the main bulk processing for items/variants if preferred for very large datasets
-            # but get_or_create is generally efficient enough for these lookups.
-            category, _ = Category.objects.get_or_create(category=row['Category'])
-            sub_category, _ = SubCategory.objects.get_or_create(sub_catagory_name=row['Sub-Category'], category=category)
-            brand, _ = Brand.objects.get_or_create(brand=row['Brand'])
-            
-            product_name = str(row['Sku name']).strip() # Ensure string and strip whitespace
-            image_url = str(row['Image']).strip()
-            mrp = str(row['MRP']).strip()
-            selling_price = str(row['Selling Price']).strip()
-            quantity = str(row['Product Size']).strip() # This is the variant name for your structure
-
-            # Common data for both Item and VariantItem
-            discount = get_discount(mrp, selling_price)
-            price = float(mrp.split(" ")[1]) if " " in mrp else float(mrp) # Handle cases where " " might not be present
-            rating = get_rating()
-            description = get_description()
-
-            # Check if an item with this product_name already exists or is pending creation
-            # We use product_name as the grouping key for items
-            item_obj = item_cache.get(product_name)
-
-            if not item_obj:
-                # If no item exists or is pending, create a new Item
-                item_sku = get_sku(product_name, unique_item_skus)
-                item_obj = Item(
-                    seller=seller,
-                    sku=item_sku,
-                    item_name=product_name,
-                    item_description=description,
-                    item_price=price,
-                    item_discount_percentage=discount,
-                    item_category=sub_category,
-                    item_brand=brand,
-                    rating=rating,
-                    quantity=quantity # The initial quantity for the base item
-                )
-                items_to_create.append(item_obj)
-                item_cache[product_name] = item_obj # Add to cache for subsequent variants
-                images_to_process[item_obj.sku] = {'url': image_url, 'is_variant': False, 'obj_name': product_name}
-                logging.debug(f"Prepared Item for creation: {product_name} (SKU: {item_sku})")
-            else:
-                # If an item already exists or is pending, treat this as a variant
-                variant_sku = get_sku(f"{product_name}-{quantity}", unique_variant_skus) # More specific SKU for variants
-                variants_data_for_bulk_create.append({
-                    "parent_item_sku": item_obj.sku, # Store SKU to link after base items are saved
-                    "variant_name": quantity,
-                    "image_url": image_url,
-                    "quantity": quantity,
-                    "price": price,
-                    "sku": variant_sku
-                })
-                images_to_process[variant_sku] = {'url': image_url, 'is_variant': True, 'obj_name': f"{product_name} - {quantity}"}
-                logging.debug(f"Prepared Variant for creation: {product_name} - {quantity} (SKU: {variant_sku})")
-
-            # Process batches
-            if len(items_to_create) >= BATCH_SIZE:
-                logging.info(f"Processing batch of {len(items_to_create)} items and {len(variants_data_for_bulk_create)} variants.")
-                _process_batch(items_to_create, variants_data_for_bulk_create, images_to_process)
-                
-                # Clear lists for the next batch
-                items_to_create = []
-                variants_data_for_bulk_create = []
-                images_to_process = {}
-                item_cache = {} # Clear cache for next batch to avoid memory issues with huge files
-
-        except KeyError as ke:
-            logging.error(f"Missing column in Excel file: {ke} at row {index}. Skipping row.")
-            continue
-        except ValueError as ve:
-            logging.error(f"Data conversion error: {ve} at row {index}. Check numeric fields. Skipping row.")
-            continue
-        except Exception as e:
-            logging.error(f"Unhandled error processing row {index}: {e}. Skipping row.")
-            continue
-
-    # Process any remaining items after the loop
-    if items_to_create:
-        logging.info(f"Processing final batch of {len(items_to_create)} items and {len(variants_data_for_bulk_create)} variants.")
-        _process_batch(items_to_create, variants_data_for_bulk_create, images_to_process)
-    
-    logging.info("Bulk creation process completed.")
-
-
-def _process_batch(items_to_create, variants_data_for_bulk_create, images_to_process):
-    """
-    Helper function to process a batch of items, images, and variants within a transaction.
-    """
-    with transaction.atomic():
-        logging.info("Bulk creating items...")
-        # Bulk create items first
-        Item.objects.bulk_create(items_to_create)
-        logging.info(f"Successfully bulk created {len(items_to_create)} items.")
-
-        # Re-fetch the created items to get their IDs, needed for ForeignKeys
-        # Use the SKUs to fetch them efficiently
-        created_item_skus = [item.sku for item in items_to_create]
-        saved_items_map = {item.sku: item for item in Item.objects.filter(sku__in=created_item_skus)}
-
-        # Process images and link them to items
-        logging.info("Processing images for items...")
-        for sku, img_data in images_to_process.items():
-            image_url = img_data['url']
-            is_variant = img_data['is_variant']
-            obj_name = img_data['obj_name']
-
-            img_obj = save_image_from_url(image_url)
-            if img_obj:
-                if not is_variant:
-                    # Link image to the main Item
-                    item_instance = saved_items_map.get(sku)
-                    if item_instance:
-                        item_instance.item_image = img_obj
-                        item_instance.save(update_fields=['item_image'])
-                        logging.debug(f"Linked image to Item: {obj_name}")
-                    else:
-                        logging.warning(f"Item with SKU {sku} not found for image linking.")
-                # Variant images will be linked during VariantItem creation below
-            else:
-                logging.warning(f"Failed to download or save image for {obj_name} from URL: {image_url}")
-
-        # Prepare VariantItem objects for bulk creation
-        variants_for_bulk_create = []
-        logging.info("Preparing variants for bulk creation...")
-        for v_data in variants_data_for_bulk_create:
-            parent_item_sku = v_data["parent_item_sku"]
-            parent_item = saved_items_map.get(parent_item_sku) # Get the item instance from our map
-
-            if parent_item:
-                variant_image_url = v_data["image_url"]
-                variant_sku = v_data["sku"]
-                
-                # Get the image object that was already processed for this variant's SKU
-                # This assumes save_image_from_url was called and the image was saved
-                img_obj_data = images_to_process.get(variant_sku)
-                if img_obj_data:
-                    # We need to fetch the Images object from DB as save_image_from_url creates and saves it
-                    try:
-                        variant_img = Images.objects.get(image__endswith=os.path.basename(img_obj_data['url']).split('?')[0])
-                        # If a default image name was used, finding it by original URL basename might be tricky.
-                        # A better way might be to return the created Images object from save_image_from_url and pass it around.
-                    except Images.DoesNotExist:
-                        logging.warning(f"Variant image for SKU {variant_sku} not found in DB after download. Skipping image link for variant.")
-                        variant_img = None
+            with transaction.atomic():
+                if row['Sku name'] not in product_names:
+                    category, _ = Category.objects.get_or_create(category=row['Category'])
+                    sub_category, _ = SubCategory.objects.get_or_create(sub_catagory_name=row['Sub-Category'], category=category)
+                    brand, _ = Brand.objects.get_or_create(brand=row['Brand'])
+                    seller = Seller.objects.get(username="seller")
+                    product_name = row['Sku name']
+                    image_url = row['Image']
+                    mrp = row['MRP']
+                    selling_price = row['Selling Price']
+                    discount = get_discount(mrp, selling_price)
+                    price = int(mrp.split(" ")[1])
+                    rating = get_rating()
+                    sku = get_sku(product_name, unique_skus)
+                    description = get_description()
+                    quantity = row['Product Size']
+                    item = Item.objects.create(
+                        seller=seller,
+                        sku=sku,
+                        item_name=product_name,
+                        item_description=description,
+                        item_price=price,
+                        item_discount_percentage=discount,
+                        item_category=sub_category,
+                        item_brand=brand,
+                        rating=rating,
+                        quantity=quantity
+                    )
+                    save_image_from_url(image_url)
+                    
+                    product_names.append(row['Sku name'])
+                    print(product_name, " DONE ")
                 else:
-                    variant_img = None
+                    item = Item.objects.filter(item_name=row['Sku name'])[0]
+                    item_image = save_image_from_url(row['Image'])
+                    variant_name = row['Sku name']
+                    quantity = row['Product Size']
+                    mrp = row['MRP']
+                    selling_price = row['Selling Price']
+                    discount = get_discount(mrp, selling_price)
+                    price = int(mrp.split(" ")[1])
+                    sku = get_sku(product_name=variant_name, unique_skus=unique_skus)
+                    discount_percentage = get_discount(mrp_str=mrp, selling_price_str=selling_price)
+                    
+                    VariantItem.objects.create(
+                            item = item,
+                            item_image = item_image,
+                            variant_name = variant_name,
+                            quantity = quantity,
+                            discount_percentage = discount_percentage,
+                            price = price,
+                            sku = sku,
+                    )
+                    
+                    print(variant_name, " DONE ")
+                    
+                    
+        except Exception as e:
+            print(e)
+            continue
 
-
-                variants_for_bulk_create.append(VariantItem(
-                    item=parent_item,
-                    variant_name=v_data["variant_name"],
-                    item_image=variant_img, # Link the image here
-                    quantity=v_data["quantity"],
-                    price=v_data["price"],
-                    sku=variant_sku
-                ))
-            else:
-                logging.warning(f"Parent item with SKU {parent_item_sku} not found for variant '{v_data['variant_name']}'. Skipping variant creation.")
-
-        if variants_for_bulk_create:
-            logging.info(f"Bulk creating {len(variants_for_bulk_create)} variants...")
-            VariantItem.objects.bulk_create(variants_for_bulk_create)
-            logging.info("Successfully bulk created variants.")
-        else:
-            logging.info("No variants to bulk create in this batch.")
