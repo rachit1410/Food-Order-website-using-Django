@@ -1,6 +1,191 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Register | Seller{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static "css/sellregis.css" %}">
+    <style>
+        .seller-bg-blur {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url("{% static 'images/login/seller_register_bg.jpg' %}") center center no-repeat;
+            background-size: cover;
+            filter: blur(8px);
+            z-index: 0;
+        }
+        .seller-bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.42);
+            z-index: 1;
+        }
+        .seller-content {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <h1>this is register seller page</h1>
+
+<div class="seller-bg-blur"></div>
+<div class="seller-bg-overlay"></div>
+<div class="seller-content">
+    <main class="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+        <div class="bg-white p-6 sm:p-8 md:p-10 rounded-xl shadow-lg w-full max-w-2xl lg:max-w-3xl">
+            <div class="flex items-center justify-between mb-6 -mt-4">
+                <a href="{% url "home" %}"><img src="{% static "/images/newlogo2.png" %}" alt="Company Logo" class="h-20 w-30 rounded-lg object-contain"></a>
+                <h2 class="text-3xl font-bold text-gray-800 text-right">Seller Registration</h2>
+            </div>
+
+            <p class="text-gray-600 text-center mb-8">Join our platform and start selling your groceries today!</p>
+
+            <form method="POST" id="sellerRegistrationForm" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label for="businessName" class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+                    <input type="text" name="shop_name" id="businessName" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="contactPerson" class="block text-sm font-medium text-gray-700 mb-1">Contact Person Name</label>
+                    <input type="text" name="seller_name" id="contactPerson" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="gst_number" class="block text-sm font-medium text-gray-700 mb-1">GST Id</label>
+                    <input type="text" name="gst_number" id="gst_number" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="shop_id" class="block text-sm font-medium text-gray-700 mb-1">Shop Id</label>
+                    <input type="text" name="shop_id" id="shop_id" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="bmp_id" class="block text-sm font-medium text-gray-700 mb-1">BMP Id</label>
+                    <input type="text" name="bmp_id" id="bmp_id" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" name="email" id="email" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" name="username" id="username" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" name="password" id="password" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirmPassword" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Business Description <span class="text-red">*Optional</span></label>
+                    <textarea id="description" name="description" rows="3"
+                                class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out"></textarea>
+                </div>
+
+                <h2 class="text-3xl font-bold text-gray-800 text-center">Bussiness address</h2>
+
+                <div>
+                    <label for="house_number" class="block text-sm font-medium text-gray-700 mb-1">House/Apartment number</label>
+                    <input type="text" name="house_number" id="house_number" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="colont" class="block text-sm font-medium text-gray-700 mb-1">Colony, Street name, Street number</label>
+                    <input type="text" name="colony" id="colont" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="nearby_place" class="block text-sm font-medium text-gray-700 mb-1">Landmark <span class="text-red">*Optional</span></label>
+                    <input type="text" name="nearby_place" id="nearby_place" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <input type="text" name="city" id="city" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                    <input type="text" name="state" id="state" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="postal_code" class="block text-sm font-medium text-gray-700 mb-1">Postal code</label>
+                    <input type="text" name="postal_code" id="postal_code" required
+                            class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out">
+                </div>
+
+                <div class="flex flex-col">
+                    <select id="country" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" selected >Select Country</option>
+                        <option value="India" >India</option>
+                        <option value="USA">USA</option>
+                        <option value="China" >China</option>
+                        <option value="Russia">Russia</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center">
+                    <input id="terms" name="terms" type="checkbox" required
+                            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <label for="terms" class="ml-2 block text-sm text-gray-900">
+                        I agree to the <a href="#" class="text-indigo-600 hover:text-indigo-500 font-medium">Terms and Conditions</a>
+                    </label>
+                </div>
+
+                <div>
+                    <button type="submit"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-blue-400 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                        Register
+                    </button>
+                </div>
+            </form>
+        </div>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script id="django-messages-data" type="application/json">
+            [
+            {% if messages %}
+                {% for message in messages %}
+                {
+                    "type": "{{ message.tags }}",
+                    "message": "{{ message }}"
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            {% endif %}
+            ]
+        </script>
+    </main>
+</div>
+
 {% endblock %}

@@ -1,11 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from accounts.models import Seller, Customer
+from django.contrib.auth.decorators import login_required
+from home.utils import get_is_seller
+from home.models import Collection
 
 
 def home(request):
-    is_logged_in = request.user.is_authenticated
-
+    is_seller = None
+    is_logged_in = request.user.is_authenticated 
+    if is_logged_in:   
+        is_seller = get_is_seller(request)
     context = {
-        'is_logged_in': is_logged_in
+        'is_logged_in': is_logged_in,
+        'is_seller': is_seller
     }
 
     return render(request, "home/home.html", context)
@@ -49,3 +56,18 @@ def thank(request):
 
 def not_found(request):
     return render(request, "404.html")
+
+
+@login_required(login_url="login")
+def my_collections(request):
+    if get_is_seller(request):
+        collections = Collection.objects.filter(seller__id=request.user.id)
+        context = {
+            "collections": collections
+        }
+        return render(request, "home/list_my_collections.html", context)
+    return redirect("home")
+
+def create_collection(request):
+    if get_is_seller(request):
+        return render(request, "home/create_collection.html")

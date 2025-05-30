@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Upload Products{% endblock %}
+    
+{% block style %}
+    <link rel="stylesheet" href="{% static "/css/upload_page.css" %}">
+{% endblock %}
+
+{% block content %}
+    {% include "components/nav_bar_nocart.html" %}
+    <main class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 lg:p-10 max-w-4xl w-full">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center">Seller Account Dashboard</h1>
+            <p class="text-gray-600 text-center mb-8">Manage your product uploads and view your history.</p>
+
+            <section class="mb-10 p-5 bg-blue-50 rounded-lg shadow-md border border-blue-200">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">Upload Products (Excel)</h2>
+                <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <input type="file" id="excelFileInput" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        class="flex-grow w-full sm:w-auto text-gray-700 bg-white border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+                    <button id="uploadButton"
+                            class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Upload File
+                    </button>
+                </div>
+                <div id="uploadMessage" class="mt-4 text-sm text-gray-700 hidden"></div>
+            </section>
+
+            <section id="currentUploadSection" class="mb-10 p-5 bg-green-50 rounded-lg shadow-md border border-green-200 hidden">
+                <h2 class="text-2xl font-bold text-green-800 mb-4 flex items-center justify-between">
+                    <span>Current Upload Progress</span>
+                    <span id="currentUploadPercentageDisplay" class="text-green-600 text-xl font-extrabold">0%</span>
+                </h2>
+                <div class="flex items-center space-x-4 mb-3">
+                    <span class="text-gray-700 font-medium">File:</span>
+                    <span id="uploadFileName" class="text-green-700 font-semibold"></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div id="progressBar" class="bg-green-500 h-4 rounded-full transition-all duration-500 ease-out" style="width: 0%;"></div>
+                </div>
+                <div id="progressText" class="text-right text-sm text-gray-600 mt-2">0%</div>
+                <div id="uploadStatus" class="mt-4 text-lg font-semibold text-green-600 text-center"></div>
+            </section>
+
+            <section class="p-5 bg-purple-50 rounded-lg shadow-md border border-purple-200">
+                <h2 class="text-2xl font-bold text-purple-800 mb-4">Recent Uploads</h2>
+                <div id="recentUploadsList" class="space-y-3 max-h-64 overflow-y-auto">
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-gray-200">
+                        <span class="font-medium text-gray-800">products_2025_05_29.xlsx</span>
+                        <span class="text-sm text-gray-500">Uploaded: 2025-05-29 10:30 AM</span>
+                        <span class="text-sm text-green-600 font-semibold">Completed</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-gray-200">
+                        <span class="font-medium text-gray-800">inventory_update_q1.csv</span>
+                        <span class="text-sm text-gray-500">Uploaded: 2025-05-28 04:15 PM</span>
+                        <span class="text-sm text-green-600 font-semibold">Completed</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-gray-200">
+                        <span class="font-medium text-gray-800">new_items_may.xlsx</span>
+                        <span class="text-sm text-gray-500">Uploaded: 2025-05-27 09:00 AM</span>
+                        <span class="text-sm text-red-600 font-semibold">Failed</span>
+                    </div>
+                </div>
+                <p id="noRecentUploads" class="text-gray-500 text-center mt-4 hidden">No recent uploads yet.</p>
+            </section>
+        </div>
+
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="{% static "/js/upload_page.js" %}"></script>
+
+    </main>
+{% endblock %}

@@ -53,7 +53,7 @@
             <ul class="d-flex justify-content-end list-unstyled m-0">
               {% if is_logged_in %}
                 <li>
-                  <a href="{% url "my-account" %}" class="rounded-circle bg-light p-2 mx-1">
+                  <a href="{% if is_seller %}{% url "my-account-seller" %}{% else %}{% url "my-account" %}{% endif %}" class="rounded-circle bg-light p-2 mx-1">
                     <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
                   </a>
                 </li>

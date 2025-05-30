@@ -128,8 +128,9 @@ class CustomerOrder(Base):
 
 
 class Collection(Base):
-    collection_name = models.CharField(max_length=255, unique=True) # Added unique=True
+    collection_name = models.CharField(max_length=255, unique=True)
     items = models.ManyToManyField(Item, related_name="item_collections")
+    seller = models.ForeignKey(Seller, related_name="my_collections", on_delete=models.CASCADE)
     collection_logo = models.OneToOneField(Images, related_name="collection_logo_of", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):

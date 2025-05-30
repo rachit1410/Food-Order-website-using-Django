@@ -9,14 +9,10 @@ import lorem
 import os
 import logging
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Import your models
 from home.models import Images, Category, SubCategory, Brand, Item, VariantItem
-from accounts.models import Seller # Assuming Seller is in accounts.models
+from accounts.models import Seller, Customer
 
-# --- Helper Functions ---
 
 def save_image_from_url(image_url):
     try:
@@ -35,7 +31,7 @@ def save_image_from_url(image_url):
 
         image_content = BytesIO(response.content)
 
-        img = Images()  # assign item here
+        img = Images()
         img.image.save(file_name, File(image_content))
         img.save()
         return img
@@ -50,7 +46,6 @@ def save_image_from_url(image_url):
 def get_discount(mrp_str, selling_price_str):
     """Calculates discount percentage from MRP and selling price strings."""
     try:
-        # Extract numeric value and convert to float
         new_mrp = float(mrp_str.split(" ")[1])
         new_sp = float(selling_price_str.split(" ")[1])
 
@@ -157,3 +152,10 @@ def exceltodatabase():
             print(e)
             continue
 
+def get_is_seller(request):
+    user = None
+    if Seller.objects.filter(pk=request.user.pk).exists():
+        user = Seller.objects.get(pk=request.user.pk)
+    if user:
+        return True
+    return False

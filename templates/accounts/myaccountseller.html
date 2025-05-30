@@ -1,7 +1,7 @@
 
 {% extends "base.html" %}
 {% load static %}
-    {% block title %}My Account{% endblock %}
+    {% block title %}My Account | Seller{% endblock %}
     {% block style %}
     <meta name="mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -31,8 +31,8 @@
                     class="tab tab-inactive px-4 py-2 rounded-lg font-semibold text-gray-600 bg-white border border-gray-200 shadow-md hover:bg-gray-50"
                     onclick="switchTab('orders')"
                 >
-                    <i data-lucide="shopping-cart" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/order-svgrepo-com.svg" %}" alt="account-svg"></i>
-                    Orders
+                    <i data-lucide="upload_files" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/upload_icon.svg" %}" alt="account-svg"></i>
+                    Uploads
                 </button>
                 <button
                     id="settings-tab"
@@ -42,37 +42,55 @@
                     <i data-lucide="settings" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/settings-svgrepo-com (1).svg" %}" alt="account-svg"></i>
                     Settings
                 </button>
-                <a
-                    style="text-decoration: none; color: rgb(82, 229, 240);"
-                    href="{% url "my-cart" %}"
-                    class=" px-4 py-2 rounded-lg font-semibold text-gray-600 bg-white border border-gray-200 shadow-md hover:bg-yellow-50">
-                    <i data-lucide="cart" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/cart-shopping-svgrepo-com.svg" %}" alt="account-svg"></i>
-                    My Cart
-                </a>
+                <a href="{% url "manage-collections" %}"
+                    class="tab tab-inactive px-4 text-decoration-none py-2 rounded-lg font-semibold text-gray-600 bg-white border border-gray-200 shadow-md hover:bg-gray-50"
+                >
+                    <i data-lucide="collections" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/collection_icon.svg" %}" alt="account-svg"></i>
+                    Manage collections
+            </a>
             </div>
 
             <div id="profile-content" class="tab-content bg-white border border-gray-200 rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-semibold text-gray-900 mb-4">Profile Information</h2>
                 <p class="text-gray-500 mb-6">Manage your personal information.</p>
-
                 <form method="post">
                     {% csrf_token %}
                     <div id="profile-edit-view" class="space-y-4">
                         <div class="flex flex-col">
-                            <label for="first-name" class="text-gray-700 font-medium">Full Name</label>
-                            <input type="text" name="name" id="first-name" value="{{profile.name}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div class="flex flex-col">
                             <label for="last-name" class="text-gray-700 font-medium">username</label>
                             <input type="text" id="last-name" value="{{profile.username}}" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="gst_number" class="text-gray-700 font-medium">GST Number</label>
+                            <input type="text" id="gst_number" value="{{profile.gst_number}}" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="shop_id" class="text-gray-700 font-medium">Shop Id</label>
+                            <input type="text" id="shop_id" value="{{profile.shop_id}}" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="bmp_id" class="text-gray-700 font-medium">BMP ID</label>
+                            <input type="text" id="bmp_id" value="{{profile.bmp_id}}" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="shop_name" class="text-gray-700 font-medium">Shop Name</label>
+                            <input type="text" id="shop_name" value="{{profile.shop_name}}" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
                         </div>
                         <div class="flex flex-col">
                             <label for="email" class="text-gray-700 font-medium">Email</label>
                             <input type="email" id="email" value="{{profile.email}}" disabled class="mt-1 p-2 rounded-md bg-gray-100 text-gray-500 border border-gray-300" />
                         </div>
                         <div class="flex flex-col">
-                            <label for="phone" class="text-gray-700 font-medium">Phone</label>
+                            <label for="first-name" class="text-gray-700 font-medium">Contact person</label>
+                            <input type="text" name="name" id="first-name" value="{{profile.name}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="phone" class="text-gray-700 font-medium">Contact Number</label>
                             <input type="tel" id="phone" name="phone_number" value="{{profile.phone_number}}" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="business_description" class="text-gray-700 font-medium">Business description</label>
+                            <textarea type="text" id="business_description" name="bussiness_description" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" >{{profile.business_description}}</textarea>
                         </div>
                         <div class="flex justify-end mt-6">
                             <button id="edit-profile-button" class="bg-yellow-gradient hover:bg-yellow-gradient text-gray-900 font-bold py-2 px-4 rounded-md shadow-md" type="submit">Edit Profile</button>
@@ -110,12 +128,8 @@
                         </div>
                         <div class="flex flex-col">
                             <label for="country" class="text-gray-700 font-medium">Country</label>
-                            <select id="country" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Select Country</option>
-                                <option value="India" {% if profile.address.country == "India" %}selected{% endif %}>India</option>
-                                <option value="USA" {% if profile.address.country == "USA" %}selected{% endif %}>USA</option>
-                                <option value="China" {% if profile.address.country == "China" %}selected{% endif %}>China</option>
-                                <option value="Rissia" {% if profile.address.country == "Russia" %}selected{% endif %}>Russia</option>
+                            <select id="country" disabled class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+                                <option value=""selected>{{ profile.address.country }}</option>
                             </select>
                         </div>
                         <div class="flex justify-end mt-6">
@@ -126,9 +140,35 @@
             </div>
 
             <div id="orders-content" class="tab-content bg-white border border-gray-200 rounded-lg shadow-md p-6 hidden">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Your Orders</h2>
-                <p class="text-gray-700">This section will display the user's order history.</p>
-                <p class="text-gray-700">(Order history data would be fetched from a database in a real application.)</p>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Your Uploads</h2>
+                        <a href="{% url "upload" %}" class="text-decoration-none inline-flex items-center px-4 py-2 bg-blue-400 hover:bg-blue-400 text-white font-semibold rounded shadow transition-colors duration-150 cursor-pointerbg-light-blue-gradient rounded">
+                            <i data-lucide="upload_files" class="inline-block w-6 h-6 mr-2"><img src="{% static "/svg-icons/upload_icon.svg" %}" alt="account-svg"></i>
+                            <span >Upload file</span>
+                        </a>
+                </div>
+                <section class="p-5 bg-purple-50 rounded-lg shadow-md border border-purple-200">
+                <h2 class="text-2xl font-bold text-purple-800 mb-4">Recent Uploads</h2>
+                <div id="recentUploadsList" class="space-y-3 max-h-64 overflow-y-auto">
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-gray-200">
+                        <span class="font-medium text-gray-800">products_2025_05_29.xlsx</span>
+                        <span class="text-sm text-gray-500">Uploaded: 2025-05-29 10:30 AM</span>
+                        <span class="text-sm text-green-600 font-semibold">Completed</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-gray-200">
+                        <span class="font-medium text-gray-800">inventory_update_q1.csv</span>
+                        <span class="text-sm text-gray-500">Uploaded: 2025-05-28 04:15 PM</span>
+                        <span class="text-sm text-green-600 font-semibold">Completed</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-gray-200">
+                        <span class="font-medium text-gray-800">new_items_may.xlsx</span>
+                        <span class="text-sm text-gray-500">Uploaded: 2025-05-27 09:00 AM</span>
+                        <span class="text-sm text-red-600 font-semibold">Failed</span>
+                    </div>
+                </div>
+                <p id="noRecentUploads" class="text-gray-500 text-center mt-4 hidden">No recent uploads yet.</p>
+            </section>
+                
             </div>
 
             <div id="settings-content" class="tab-content bg-white border border-gray-200 rounded-lg shadow-md p-6 hidden">

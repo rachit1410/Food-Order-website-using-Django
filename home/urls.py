@@ -11,6 +11,8 @@ from home.views import (
     card_pay,
     thank,
     not_found,
+    my_collections,
+    create_collection
 )
 
 urlpatterns = [
@@ -25,4 +27,6 @@ urlpatterns = [
     path("card-gateway/", card_pay, name="card-gateway"),
     path("thank-you/", thank, name="thank-you"),
     path("404/", not_found, name="404"),
+    path("manage-collections/", my_collections, name="manage-collections"),
+    path("create-collections/", create_collection, name="create-collections"),
 ]
