@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'home',
+    'django_elasticsearch_dsl',
 ]
 
 MIDDLEWARE = [
@@ -105,6 +106,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Elasticsearch implimentation
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'http://localhost:9200',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

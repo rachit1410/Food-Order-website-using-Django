@@ -54,12 +54,12 @@ class Item(Base):
     item_name = models.CharField(max_length=255)
     item_description = models.TextField()
     item_price = models.FloatField(default=1)
-    item_image = models.ForeignKey(Images, related_name="item_primary_image", on_delete=models.SET_NULL, null=True, blank=True) # Changed related_name and on_delete
+    item_image = models.ForeignKey(Images, related_name="item_primary_image", on_delete=models.SET_NULL, null=True, blank=True)
     item_discount_percentage = models.IntegerField(default=0)
-    item_category = models.ForeignKey(SubCategory, related_name="items", on_delete=models.SET_NULL, null=True, blank=True)
+    item_subcategory = models.ForeignKey(SubCategory, related_name="items", on_delete=models.SET_NULL, null=True, blank=True)
     item_brand = models.ForeignKey(Brand, related_name="brand_items", on_delete=models.CASCADE)
     rating = models.FloatField(default=5.0)
-    quantity = models.CharField(max_length=255) # Consider changing to IntegerField or DecimalField if always numeric
+    quantity = models.CharField(max_length=255)
 
     def __str__(self):
         return self.item_name

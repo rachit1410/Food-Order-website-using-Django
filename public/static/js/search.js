@@ -30,7 +30,7 @@
                     const productImage = document.createElement('img');
                     productImage.src = product.image;
                     productImage.alt = product.name;
-                    productImage.classList.add('w-full', 'h-40', 'object-cover', 'rounded-md', 'mb-4');
+                    productImage.classList.add('');
 
                     const productName = document.createElement('h3');
                     productName.textContent = product.name;
@@ -48,7 +48,7 @@
                     productCard.appendChild(productName);
                     productCard.appendChild(productCategory);
                     productCard.appendChild(productPrice);
-                    productList.appendChild(productCard);
+                    productList.appendChild(productCard);v4
                 });
             }
         }

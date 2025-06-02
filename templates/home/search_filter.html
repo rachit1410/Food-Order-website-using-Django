@@ -10,146 +10,163 @@
 
 {% block content %}
 
-<header>
-    <div class="container-fluid">
-      <div class="row py-3 border-bottom align-items-center">
-        <!-- Logo Column -->
-        <div class="col-sm-4 col-lg-3 text-center text-sm-start">
-          <div class="main-logo">
-            <a href="{% url "home" %}">
-              <img src="{% static '/images/newlogo2.png'%}" alt="logo" class="img-fluid">
-            </a>
-          </div>
-        </div>
-
-        <!-- Search Column -->
-        <div class="col-sm-6 col-lg-5 d-none d-lg-block">
-          <div class="search-bar row bg-light p-2 my-2 rounded-4">
-            <div class="col-md-4 d-none d-md-block">
-              <select class="form-select border-0 bg-transparent">
-                <option>All Categories</option>
-                    <option>Groceries</option>
-                    <option>Drinks</option>
-                    <option>Chocolates</option>
-              </select>
-            </div>
-            <div class="col-md-7">
-              <form id="search-form" class="text-center" action="index.html" method="post">
-                <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
-              </form>
-            </div>
-            <div class="col-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Side Icons/Cart Column -->
-        <div class="col-sm-4 col-lg-4 d-flex justify-content-end gap-3 align-items-center">
-          <div class="support-box text-end d-none d-xl-block">
-            <span class="fs-6 text-muted">For Support?</span>
-            <h5 class="mb-0">+980-34984089</h5>
-          </div>
-
-          <ul class="flex justify-end items-center space-x-2 list-none m-0">
-    <li>
-        <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
-        </a>
-    </li>
-    <li>
-        <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-        </a>
-    </li>
-    </ul>
-        <a style="text-decoration: none;" href="{% url "my-cart" %}">
-            <div class="cart text-end d-none d-lg-block">
-            <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button">
-              <span class="fs-6 text-muted">Your Cart</span>
-              <span class="cart-total fs-5 fw-bold">$1290.00</span>
-            </button>
-          </div>
-        </a>
-        </div>
-      </div>
-    </div>
-</header>
+{% include "components/nav_bar.html" with filters=query_list %}
 
 <main class="bg-gray-100 font-inter">
     <div class="container mx-auto mt-8 p-4">
         <h1 class="text-3xl font-semibold text-gray-900 text-center mb-6">Search and Filter</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="md:col-span-1">
+            <form method="GET" action="{% url "search" %}" class="md:col-span-1">
                 <div class="bg-white shadow-md rounded-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Filters</h2>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Filters ({{data.count}})</h2>
 
                     <div class="mb-4">
                         <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Search</label>
-                        <input type="text" id="search" placeholder="Search products..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" />
+                        <input type="text" name="q" id="search" value="{{query.searched}}" placeholder="Search products..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" />
                     </div>
 
                     <div class="mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Category</h3>
-                        <div class="space-y-2">
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" value="electronics">
-                                <span class="ml-2 text-gray-700 text-sm">Electronics</span>
-                            </label><br>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" value="clothing">
-                                <span class="ml-2 text-gray-700 text-sm">Clothing</span>
-                            </label><br>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" value="home-garden">
-                                <span class="ml-2 text-gray-700 text-sm">Home & Garden</span>
-                            </label><br>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" value="books">
-                                <span class="ml-2 text-gray-700 text-sm">Books</span>
-                            </label>
-                        </div>
+                        <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+                        <select name="cat" id="category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" >
+                            <option value="">select Category</option>
+                            {% for category in query_list.categories %}
+                                <option value="{{category.category}}" {% if category.category == query.category %}selected{% endif %} >{{category.category}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Sub Category</label>
+                        <select name="subcat" id="sub-category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" >
+                            <option value="">select sub category</option>
+                            {% for sub_cat in query_list.sub_cats %}
+                                <option value="{{sub_cat.sub_catagory_name}}" {% if sub_cat.sub_catagory_name == query.sub_cat %}selected{% endif %} >{{sub_cat.sub_catagory_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Brand</label>
+                        <select name="br" id="brand" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" >
+                            <option value="">select brand</option>
+                            {% for brand in query_list.brands %}
+                                <option value="{{brand.brand}}" {% if brand.brand == query.brand %}selected{% endif %} >{{brand.brand}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
                     <div class="mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Price Range</h3>
                         <div class="space-y-2">
                             <label for="min-price" class="block text-gray-700 text-sm font-bold mb-1">Min</label>
-                            <input type="number" id="min-price" placeholder="0" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
+                            <input type="number" name="minp" id="min-price" placeholder="0" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
                             <label for="max-price" class="block text-gray-700 text-sm font-bold mt-2 mb-1">Max</label>
-                            <input type="number" id="max-price" placeholder="1000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
+                            <input type="number" name="maxp" id="max-price" placeholder="1000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Sort By</h3>
-                        <select id="sort" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
-                            <option value="relevance">Relevance</option>
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="price-desc">Price: High to Low</option>
-                            <option value="name-asc">Name: A to Z</option>
-                            <option value="name-desc">Name: Z to A</option>
+                        <select name="sort" id="sort" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
+                            <option value="relevance" {% if query.sort_by == "relevance" or not query.sort_by %}selected{% endif %}>Relevance</option>
+                            <option value="item_price" {% if query.sort_by == "item_price" %}selected{% endif %}>Price: Low to High</option>
+                            <option value="-item_price" {% if query.sort_by == "-item_price" %}selected{% endif %}>Price: High to Low</option>
+                            <option value="item_name" {% if query.sort_by == "item_name" %}selected{% endif %}>Name: A to Z</option>
+                            <option value="-item_name" {% if query.sort_by == "-item_name" %}selected{% endif %}>Name: Z to A</option>
                         </select>
                     </div>
 
-                    <button onclick="applyFilters()" class="bg-light-blue-gradient hover:bg-blue-300 text-gray-900 font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out w-full">
+                    <button type="submit" class="bg-light-blue-gradient hover:bg-blue-300 text-gray-900 font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out w-full">
                         Apply Filters
                     </button>
                 </div>
-            </div>
+            </form>
 
             <div class="md:col-span-3">
-                <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for product in data.products %}
+                    <div class="product-item">
+                        <span class="badge bg-success position-absolute m-3">-{{product.item_discount_percentage}}%</span>
+                        <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                        <figure>
+                          <a href="#" title="{{product.item_name}}">
+                            {% if product.item_image.image %}
+                                <img src="{{ product.item_image.image }}" alt="item_image" class="tab-image">
+                            {% else %}
+                                <img src="{% static "/images/placeholder.jpg" %}" alt="item_image" class="tab-image">
+                            {% endif %}
+                          </a>
+                        </figure>
+                        <h3>{{product.item_name}}</h3>
+                        <div class="qty">{{product.quantity}}</div>
+                        <span class="rating">
+                            <svg width="24" height="24" class="text-primary" style="display:inline;"><use xlink:href="#star-solid"></use></svg><span>{{ product.rating }}</span>
+                        </span>
+                        <span class="price">₹{{product.item_price}}</span>
+                        <div class="d-flex align-items-center justify-content-between">
+                          <div class="input-group product-qty">
+                              <span class="input-group-btn">
+                                  <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
+                                    <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                                  </button>
+                              </span>
+                              <input type="text" id="quantity" name="quantity" class="form-control input-number" value="0">
+                              <span class="input-group-btn">
+                                  <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
+                                      <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                                  </button>
+                              </span>
+                          </div>
+                          <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    <br>
+                    <nav class="flex items-center space-x-2" aria-label="Pagination">
+                        {% if page.previous %}
+                            <a href="?{% if query.searched %}q={{ query.searched }}&{% endif %}{% if query.category %}cat={{ query.category }}&{% endif %}{% if query.sub_cat %}subcat={{ query.sub_cat }}&{% endif %}{% if query.brand %}br={{ query.brand }}&{% endif %}{% if query.min_price %}minp={{ query.min_price }}&{% endif %}{% if query.max_price %}maxp={{ query.max_price }}&{% endif %}{% if query.sort_by %}sort={{ query.sort_by }}&{% endif %}page={{ page.page_number|add:"-1" }}"
+                            class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                <span class="sr-only">Previous</span>
+                                <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        {% else %}
+                            <span class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset bg-gray-200 cursor-not-allowed">
+                                <span class="sr-only">Previous</span>
+                                <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        {% endif %}
+                        <span class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset bg-white">
+                            Page {{ page.page_number }}
+                        </span>
+                        {% if page.next %}
+                            <a href="?{% if query.searched %}q={{ query.searched }}&{% endif %}{% if query.category %}cat={{ query.category }}&{% endif %}{% if query.sub_cat %}subcat={{ query.sub_cat }}&{% endif %}{% if query.brand %}br={{ query.brand }}&{% endif %}{% if query.min_price %}minp={{ query.min_price }}&{% endif %}{% if query.max_price %}maxp={{ query.max_price }}&{% endif %}{% if query.sort_by %}sort={{ query.sort_by }}&{% endif %}page={{ page.page_number|add:"1" }}"
+                            class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                <span class="sr-only">Next</span>
+                                <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        {% else %}
+                            <span class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset bg-gray-200 cursor-not-allowed">
+                                <span class="sr-only">Next</span>
+                                <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        {% endif %}
+                    </nav>
+
+                </div>
                 <div id="no-results" class="text-center text-gray-500 text-lg mt-6 hidden">No products found.</div>
             </div>
         </div>
     </div>
 
-    <script src="{% static "js/search.js" %}"></script>
     <script id="django-messages-data" type="application/json">
         [
         {% if messages %}

@@ -6,9 +6,7 @@ import pandas as pd
 import random
 import string
 import lorem
-import os
 import logging
-
 
 from home.models import Images, Category, SubCategory, Brand, Item, VariantItem
 from accounts.models import Seller, Customer
@@ -107,6 +105,7 @@ def exceltodatabase():
                     sku = get_sku(product_name, unique_skus)
                     description = get_description()
                     quantity = row['Product Size']
+                    image = save_image_from_url(image_url)
                     item = Item.objects.create(
                         seller=seller,
                         sku=sku,
@@ -114,12 +113,13 @@ def exceltodatabase():
                         item_description=description,
                         item_price=price,
                         item_discount_percentage=discount,
-                        item_category=sub_category,
+                        item_subcategory=sub_category,
                         item_brand=brand,
                         rating=rating,
-                        quantity=quantity
+                        quantity=quantity,
+                        item_image=image,
                     )
-                    save_image_from_url(image_url)
+                    
                     
                     product_names.append(row['Sku name'])
                     print(product_name, " DONE ")
