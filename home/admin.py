@@ -10,7 +10,8 @@ from home.models import (
     WishList,
     Status,
     CustomerOrder,
-    VariantItem
+    VariantItem,
+    Collection
 )
 
 
@@ -24,3 +25,4 @@ admin.site.register(WishList)
 admin.site.register(Status)
 admin.site.register(CustomerOrder)
 admin.site.register(VariantItem)
+admin.site.register(Collection)

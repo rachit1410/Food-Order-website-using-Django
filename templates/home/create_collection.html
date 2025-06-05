@@ -3,153 +3,86 @@
 {% block title %}Create Collection{% endblock %}
 
 {% block style %}
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
-    <link rel="stylesheet" href="{% static "/css/search.css" %}">
+    
 {% endblock %}
 
 {% block content %}
 
-<header>
-    <div class="container-fluid">
-      <div class="row py-3 border-bottom align-items-center">
-        <!-- Logo Column -->
-        <div class="col-sm-4 col-lg-3 text-center text-sm-start">
-          <div class="main-logo">
-            <a href="{% url "home" %}">
-              <img src="{% static '/images/newlogo2.png'%}" alt="logo" class="img-fluid">
-            </a>
-          </div>
+{% include "components/nav_bar.html" with filters=query_list %}
+<script src="https://cdn.tailwindcss.com"></script>
+<main class="bg-gray-100 min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+  <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 lg:p-10 max-w-4xl w-full">
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center">Create New Collection</h1>
+    <p class="text-gray-600 text-center mb-8">Define your collection details and select products.</p>
+
+    <section class="p-5 bg-purple-50 rounded-lg shadow-md border border-purple-200 mb-8">
+      <h2 class="text-2xl font-bold text-purple-800 mb-6">Collection Details</h2>
+      <div class="space-y-6">
+        <div>
+          <label for="collectionTitle" class="block text-sm font-medium text-gray-700 mb-1">Collection Title</label>
+          <input type="text" id="collectionTitle" placeholder="e.g., Organic Essentials, Weekend BBQ"
+               class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
         </div>
 
-        <!-- Search Column -->
-        <div class="col-sm-6 col-lg-5 d-none d-lg-block">
-          <div class="search-bar row bg-light p-2 my-2 rounded-4">
-            <div class="col-md-4 d-none d-md-block">
-              <select class="form-select border-0 bg-transparent">
-                <option>All Categories</option>
-                    <option>Groceries</option>
-                    <option>Drinks</option>
-                    <option>Chocolates</option>
-              </select>
-            </div>
-            <div class="col-md-7">
-              <form id="search-form" class="text-center" action="index.html" method="post">
-                <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
-              </form>
-            </div>
-            <div class="col-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/>
-              </svg>
-            </div>
-          </div>
+        <div>
+          <label for="collectionDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea id="collectionDescription" rows="3" placeholder="A brief description of this collection..."
+                class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-y"></textarea>
         </div>
 
-        <!-- Right Side Icons/Cart Column -->
-        <div class="col-sm-4 col-lg-4 d-flex justify-content-end gap-3 align-items-center">
-          <div class="support-box text-end d-none d-xl-block">
-            <span class="fs-6 text-muted">For Support?</span>
-            <h5 class="mb-0">+980-34984089</h5>
+        <div>
+          <label for="coverImageInput" class="block text-sm font-medium text-gray-700 mb-1">Cover Image</label>
+          <input type="file" id="coverImageInput" accept="image/*"
+               class="w-full text-gray-700 bg-white border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-pointer">
+          <div id="imagePreviewContainer" class="mt-4 hidden">
+            <p class="text-sm text-gray-600 mb-2">Image Preview:</p>
+            <img id="coverImagePreview" src="#" alt="Cover Image Preview" class="max-w-xs h-auto rounded-md shadow-md border border-gray-200 object-cover">
           </div>
-
-          <ul class="flex justify-end items-center space-x-2 list-none m-0">
-    <li>
-        <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
-        </a>
-    </li>
-    <li>
-        <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-        </a>
-    </li>
-    </ul>
-        <a style="text-decoration: none;" href="{% url "my-cart" %}">
-            <div class="cart text-end d-none d-lg-block">
-            <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button">
-              <span class="fs-6 text-muted">Your Cart</span>
-              <span class="cart-total fs-5 fw-bold">$1290.00</span>
-            </button>
-          </div>
-        </a>
         </div>
       </div>
-    </div>
-</header>
+    </section>
 
-<main class="bg-gray-100 font-inter">
-    <div class="container mx-auto mt-8 p-4">
-        <h1 class="text-3xl font-semibold text-gray-900 text-center mb-6">Search and Filter</h1>
+    <section class="p-5 bg-green-50 rounded-lg shadow-md border border-green-200 mb-8">
+      <h2 class="text-2xl font-bold text-green-800 mb-6">Select Products</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="md:col-span-1">
-                <div class="bg-white shadow-md rounded-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Filters</h2>
+      <div class="mb-4">
+        <label for="productSearch" class="block text-sm font-medium text-gray-700 mb-1">Search Products</label>
+        <input type="text" id="productSearch" placeholder="Search by name or category..."
+             class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+      </div>
 
-                    <div class="mb-4">
-                        <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Search</label>
-                        <input type="text" id="search" placeholder="Search products..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" />
-                    </div>
-
-                    <div class="mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Category</h3>
-                        <div class="space-y-2">
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" value="electronics">
-                                <span class="ml-2 text-gray-700 text-sm">Electronics</span>
-                            </label><br>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" value="clothing">
-                                <span class="ml-2 text-gray-700 text-sm">Clothing</span>
-                            </label><br>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" value="home-garden">
-                                <span class="ml-2 text-gray-700 text-sm">Home & Garden</span>
-                            </label><br>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded" value="books">
-                                <span class="ml-2 text-gray-700 text-sm">Books</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Price Range</h3>
-                        <div class="space-y-2">
-                            <label for="min-price" class="block text-gray-700 text-sm font-bold mb-1">Min</label>
-                            <input type="number" id="min-price" placeholder="0" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
-                            <label for="max-price" class="block text-gray-700 text-sm font-bold mt-2 mb-1">Max</label>
-                            <input type="number" id="max-price" placeholder="1000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Sort By</h3>
-                        <select id="sort" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
-                            <option value="relevance">Relevance</option>
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="price-desc">Price: High to Low</option>
-                            <option value="name-asc">Name: A to Z</option>
-                            <option value="name-desc">Name: Z to A</option>
-                        </select>
-                    </div>
-
-                    <button onclick="applyFilters()" class="bg-light-blue-gradient hover:bg-blue-300 text-gray-900 font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out w-full">
-                        Apply Filters
-                    </button>
-                </div>
-            </div>
-
-            <div class="md:col-span-3">
-                <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    </div>
-                <div id="no-results" class="text-center text-gray-500 text-lg mt-6 hidden">No products found.</div>
-            </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-3">Available Products</h3>
+          <div id="availableProductsList" class="bg-white border border-gray-200 rounded-md p-3 max-h-80 overflow-y-auto space-y-2">
+            <p class="text-gray-500 text-center py-4">Loading products...</p>
+          </div>
         </div>
-    </div>
 
-    <script src="{% static "js/search.js" %}"></script>
+        <div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-3">Selected Products</h3>
+          <div id="selectedProductsList" class="bg-white border border-gray-200 rounded-md p-3 max-h-80 overflow-y-auto space-y-2">
+            <p class="text-gray-500 text-center py-4">No products selected.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="text-center mt-8">
+      <button id="saveCollectionButton"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-10 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        Save Collection
+      </button>
+      <a href="{% url "manage-collections" %}" id="goToHomeButton"
+          class="text-decoration-none bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-10 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hidden">
+        Go to Manage Collections
+      </a>
+      <div id="saveMessage" class="mt-4 text-sm text-center text-gray-700 hidden"></div>
+    </div>
+  </div>
+  </main>
+
+  <script src="{% static "js/create-collection.js" %}"></script>
     <script id="django-messages-data" type="application/json">
         [
         {% if messages %}

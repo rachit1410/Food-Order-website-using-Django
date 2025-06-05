@@ -146,7 +146,6 @@
                         <li><a href="{% url "contact-us" %}" class="dropdown-item">Contact </a></li>
                         <li><a href="{% url "thank-you" %}" class="dropdown-item">Thank You </a></li>
                         <li><a href="{% url "my-account" %}" class="dropdown-item">My Account </a></li>
-                        <li><a href="{% url "404" %}" class="dropdown-item">404 Error </a></li>
                       </ul>
                     </li>
                     <li class="nav-item">
@@ -346,10 +345,10 @@
 
             <div class="section-header d-flex flex-wrap flex-wrap justify-content-between mb-5">
               
-              <h2 class="section-title">Newly Arrived Brands</h2>
+              <h2 class="section-title">Newly Arrived Collections</h2>
 
               <div class="d-flex align-items-center">
-                <a href="#" class="btn-link text-decoration-none">View All Categories →</a>
+                <a href="{% url "list-collections" %}" class="btn-link text-decoration-none">View All Collections →</a>
                 <div class="swiper-buttons">
                   <button class="swiper-prev brand-carousel-prev btn btn-yellow">❮</button>
                   <button class="swiper-next brand-carousel-next btn btn-yellow">❯</button>
@@ -2309,13 +2308,7 @@
         </div>
       </div>
     </div>
-    <script src="{% static '/js/jquery-1.11.0.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-    <script src="{% static '/js/plugins.js' %}"></script>
-    <script src="{% static '/js/script.js' %}"></script>
-
-        <script id="django-messages-data" type="application/json">
+    <script id="django-messages-data" type="application/json">
         [
         {% if messages %}
             {% for message in messages %}
@@ -2327,5 +2320,10 @@
         {% endif %}
         ]
     </script>
+    <script src="{% static '/js/jquery-1.11.0.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="{% static '/js/plugins.js' %}"></script>
+    <script src="{% static '/js/script.js' %}"></script>
 
 {% endblock %}

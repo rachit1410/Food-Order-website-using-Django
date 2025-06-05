@@ -4,11 +4,21 @@ from home.models import Item
 
 @registry.register_document
 class ItemDocument(Document):
+    item_name = fields.TextField(
+        fields={
+            "keyword": fields.KeywordField(),
+        }
+    )
+    item_description = fields.TextField(
+        fields={
+            "keyword": fields.KeywordField(),
+        }
+    )
     item_subcategory = fields.ObjectField(
         properties={
-            'sub_catagory_name': fields.TextField(),
+            'sub_catagory_name': fields.KeywordField(),
             'category': fields.ObjectField(properties={
-                'category': fields.TextField(),
+                'category': fields.KeywordField(),
             }),
         },
         attr='item_subcategory'
@@ -16,7 +26,7 @@ class ItemDocument(Document):
 
     item_brand = fields.ObjectField(
         properties={
-            'brand': fields.TextField(),
+            'brand': fields.KeywordField(),
         },
         attr='item_brand'
     )
@@ -27,6 +37,13 @@ class ItemDocument(Document):
         },
         attr="item_image"
     )
+    
+    seller = fields.ObjectField(
+        properties={
+            "username": fields.KeywordField()
+        },
+        attr="seller"
+    )
 
     class Index:
         name = 'items'
@@ -35,12 +52,11 @@ class ItemDocument(Document):
     class Django:
         model = Item
         fields = [
-            "item_name",
-            "item_description",
             "item_price",
             "item_discount_percentage",
             "rating",
             "quantity",
+            "uuid"
         ]
 
     def prepare_item_subcategory(self, instance):

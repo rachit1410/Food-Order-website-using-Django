@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Manage Collections{% endblock %}
 {% block content %}
-{% include "components/nav_bar_nocart.html" %}
+{% include "components/nav_bar.html" with filters=user%}
 <main class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
     <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 lg:p-10 max-w-7xl w-full">
         <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center">Your Item Collections</h1>
@@ -12,47 +12,38 @@
             <h2 class="text-2xl font-bold text-blue-800 mb-6">Your Collections</h2>
 
             <div id="collectionsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-white rounded-lg shadow-md p-5 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Fresh Produce</h3>
-                    <p class="text-gray-600 text-sm mb-3">Seasonal fruits and vegetables, picked fresh daily.</p>
-                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        150 Items
-                    </span>
-                </div>
 
-                <div class="bg-white rounded-lg shadow-md p-5 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Dairy & Bakery</h3>
-                    <p class="text-gray-600 text-sm mb-3">Milk, cheese, yogurt, and freshly baked goods.</p>
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        80 Items
-                    </span>
-                </div>
+                {% for collection in data %}
+                <div class="relative rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                    <!-- Blurred background image -->
+                    <div class="absolute inset-0 z-0"
+                        style="background-image: url('{{ collection.collection.collection_logo.image.url }}'); background-size: cover; background-position: center; filter: blur(8px); opacity: 0.7;">
+                    </div>
+                    <!-- Foreground content with backdrop blur -->
+                    <div class="relative z-10 p-5 bg-white/10 backdrop-blur-md rounded-lg h-full flex flex-col">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ collection.collection.collection_name }}</h3>
+                            <a href="{% url 'delete-collection' collection.collection.pk %}" 
+                            class="text-decoration-none text-red-600 hover:text-red-800 text-sm font-bold ml-4"
+                            onclick="return confirm('Are you sure you want to delete this collection?');">
+                                Delete
+                            </a>
+                        </div>
+                        <p class="text-gray-700 text-sm mb-3">{{ collection.collection.collection_description }}
+                        <a href="{% url 'view-collection' collection.collection.pk %}" 
+                            class="text-decoration-none text-blue-600 hover:text-blue-800 text-sm font-bold ml-1">
+                                View →
+                        </a>
+                        </p>
+                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ collection.item_count }} Items
+                        </span>
 
-                <div class="bg-white rounded-lg shadow-md p-5 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Pantry Staples</h3>
-                    <p class="text-gray-600 text-sm mb-3">Rice, pasta, oils, spices, and canned goods.</p>
-                    <span class="inline-block bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        200 Items
-                    </span>
+                    </div>
                 </div>
+                {% endfor %}
 
-                <div class="bg-white rounded-lg shadow-md p-5 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Beverages</h3>
-                    <p class="text-gray-600 text-sm mb-3">Juices, sodas, coffee, and tea selections.</p>
-                    <span class="inline-block bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        65 Items
-                    </span>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-md p-5 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Frozen Foods</h3>
-                    <p class="text-gray-600 text-sm mb-3">Ready meals, frozen vegetables, and desserts.</p>
-                    <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        95 Items
-                    </span>
-                </div>
-
-                <a href="{% url "create-collections" %}" class="text-decoration-none bg-white rounded-lg shadow-md p-5 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                <a href="{% url "create-collection" %}" class="text-decoration-none bg-white rounded-lg shadow-md p-5 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
                     <div class="flex items-center justify-center h-full w-full min-h-[120px]">
                         <i data-lucide="upload_files" class="inline-block w-4 h-4 mr-2"><img src="{% static "/svg-icons/mobileplus.svg" %}" alt="account-svg"></i>
                         <span class="text-gray-400 text-lg font-medium">Add new Collection...</span>
@@ -65,5 +56,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <scripts src="{% static "js/my_collections.js" %}" ></script>
 </main>
-
+    <script id="django-messages-data" type="application/json">
+        [
+        {% if messages %}
+            {% for message in messages %}
+            {
+                "type": "{{ message.tags }}",
+                "message": "{{ message }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        {% endif %}
+        ]
+    </script>
 {% endblock %}

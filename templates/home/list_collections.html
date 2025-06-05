@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Collections{% endblock %}
+{% block content %}
+{% include "components/nav_bar.html" with filters=user %}
+
+<script src="https://cdn.tailwindcss.com"></script>
+<main class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 lg:p-10 max-w-7xl w-full">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center">Our Item Collections</h1>
+        <p class="text-gray-600 text-center mb-8">Explore a variety of curated product collections.</p>
+
+        <section class="p-5 bg-blue-50 rounded-lg shadow-md border border-blue-200">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6">Available Collections</h2>
+
+            <div id="collectionsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                {% for collection in data %}
+                <div class="relative rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                    <!-- Blurred background image -->
+                    <div class="absolute inset-0 z-0"
+                        style="background-image: url('{{ collection.collection.collection_logo.image.url }}'); background-size: cover; background-position: center; filter: blur(6px); opacity: 0.8;">
+                    </div>
+                    <!-- Foreground content with backdrop blur -->
+                    <div class="relative z-10 p-5 bg-white/10 backdrop-blur-md rounded-lg h-full flex flex-col">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ collection.collection.collection_name }}</h3>
+                            <a href="{% url "view-collection" collection.collection.pk %}"
+                            class="text-blue-600 hover:text-blue-800 text-sm font-bold ml-4 text-decoration-none">
+                                View→
+                            </a>
+                        </div>
+                        <p class="text-gray-700 text-sm mb-3">{{ collection.collection.collection_description }}</p>
+                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ collection.item_count }} Items
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <p id="noCollections" class="text-gray-500 text-center mt-8 hidden">No collections available yet.</p>
+        </section>
+    </div>
+    <scripts src="{% static "js/my_collections.js" %}" ></script>
+</main>
+    <script id="django-messages-data" type="application/json">
+        [
+        {% if messages %}
+            {% for message in messages %}
+            {
+                "type": "{{ message.tags }}",
+                "message": "{{ message }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        {% endif %}
+        ]
+    </script>
+{% endblock %}

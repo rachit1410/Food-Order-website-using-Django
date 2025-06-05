@@ -10,9 +10,13 @@ from home.views import (
     upi_pay,
     card_pay,
     thank,
-    not_found,
     my_collections,
-    create_collection
+    create_collection,
+    search_for_collection,
+    delete_collecton,
+    list_collections,
+    view_collection,
+    variant_detail
 )
 
 urlpatterns = [
@@ -20,13 +24,17 @@ urlpatterns = [
     path("about-us/", about_us, name="about-us"),
     path("contact-us/", contact_us, name="contact-us"),
     path("item-detail/<pk>/", item_detail, name="item-detail"),
+    path("variant-detail/<pk>/", variant_detail, name="variant-detail"),
     path("search/", search_filter, name="search"),
     path("check-out/", check_out, name="check-out"),
     path("my-cart/", cart, name="my-cart"),
     path("upi-gateway/", upi_pay, name="upi-gateway"),
     path("card-gateway/", card_pay, name="card-gateway"),
     path("thank-you/", thank, name="thank-you"),
-    path("404/", not_found, name="404"),
     path("manage-collections/", my_collections, name="manage-collections"),
-    path("create-collections/", create_collection, name="create-collections"),
+    path("create-collection/", create_collection, name="create-collection"),
+    path("api/search-products/", search_for_collection, name="search-products"),
+    path("delete-collection/<pk>", delete_collecton, name="delete-collection"),
+    path("list-collections/", list_collections, name="list-collections"),
+    path("view-collection/<pk>", view_collection, name="view-collection"),
 ]

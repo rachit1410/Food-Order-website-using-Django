@@ -90,7 +90,7 @@
                         <span class="badge bg-success position-absolute m-3">-{{product.item_discount_percentage}}%</span>
                         <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
                         <figure>
-                          <a href="#" title="{{product.item_name}}">
+                          <a href="{% url "item-detail" product.uuid %}" title="{{product.item_name}}">
                             {% if product.item_image.image %}
                                 <img src="{{ product.item_image.image }}" alt="item_image" class="tab-image">
                             {% else %}

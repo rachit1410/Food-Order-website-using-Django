@@ -135,18 +135,22 @@ def exceltodatabase():
                     sku = get_sku(product_name=variant_name, unique_skus=unique_skus)
                     discount_percentage = get_discount(mrp_str=mrp, selling_price_str=selling_price)
                     
-                    VariantItem.objects.create(
-                            item = item,
-                            item_image = item_image,
-                            variant_name = variant_name,
-                            quantity = quantity,
-                            discount_percentage = discount_percentage,
-                            price = price,
-                            sku = sku,
-                    )
-                    
-                    print(variant_name, " DONE ")
-                    
+                    duplicate_varient = VariantItem.objects.filter(variant_name=variant_name, quantity=quantity)
+
+                    if quantity == item.quantity or duplicate_varient.exists():
+                        continue
+                    else:
+                        VariantItem.objects.create(
+                                item = item,
+                                item_image = item_image,
+                                variant_name = variant_name,
+                                quantity = quantity,
+                                discount_percentage = discount_percentage,
+                                price = price,
+                                sku = sku,
+                        )
+                        
+                        print(variant_name, " DONE ")
                     
         except Exception as e:
             print(e)
@@ -159,3 +163,8 @@ def get_is_seller(request):
     if user:
         return True
     return False
+
+def get_discounted_price(price, discount):
+    if discount and price:
+        return int(price-(price*discount/100))
+    return 0

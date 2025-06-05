@@ -2,150 +2,142 @@
 
 {% load static %}
 
-{% block title %}Item | Details{% endblock %}
+{% block title %}Item details{% endblock %}
+
+{% block style %}
+  <link rel="stylesheet" href="{% static "/css/product-detail.css" %}">
+{% endblock %}
 
 {% block content %}
 
-  <header>
-    <div class="container-fluid">
-      <div class="row py-3 border-bottom align-items-center">
-        <!-- Logo Column -->
-        <div class="col-sm-4 col-lg-3 text-center text-sm-start">
-          <div class="main-logo">
-            <a href="{% url "home" %}">
-              <img src="{% static '/images/newlogo2.png'%}" alt="logo" class="img-fluid">
+<script src="https://cdn.tailwindcss.com"></script>
+
+{% include "components/nav_bar.html" with filters=user %}
+
+<main class="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 lg:p-10 max-w-6xl w-full">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900">Product Details</h1>
+            <a href="{% url 'home' %}"
+               class="text-decoration-none bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-sm transition duration-300 ease-in-out">
+              Back
             </a>
-          </div>
         </div>
 
-        <!-- Search Column -->
-        <div class="col-sm-6 col-lg-5 d-none d-lg-block">
-          <div class="search-bar row bg-light p-2 my-2 rounded-4">
-            <div class="col-md-4 d-none d-md-block">
-              <select class="form-select border-0 bg-transparent">
-                <option>All Categories</option>
-                    <option>Groceries</option>
-                    <option>Drinks</option>
-                    <option>Chocolates</option>
-              </select>
+        <!-- Product Details Section -->
+        <section class="flex flex-col md:flex-row gap-8 mb-12 p-5 bg-blue-50 rounded-lg shadow-md border border-blue-200">
+            <!-- Product Image -->
+            <div class="md:w-1/2 flex justify-center items-center p-4 bg-white rounded-lg shadow-inner">
+                <img id="productImage" src="{{product.item_image.image.url}}" alt="{{product.item_name}}" class="max-w-full h-auto rounded-md object-contain">
             </div>
-            <div class="col-md-7">
-              <form id="search-form" class="text-center" action="index.html" method="post">
-                <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
-              </form>
-            </div>
-            <div class="col-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/>
-              </svg>
-            </div>
-          </div>
-        </div>
 
-        <!-- Right Side Icons/Cart Column -->
-        <div class="col-sm-4 col-lg-4 d-flex justify-content-end gap-3 align-items-center">
-          <div class="support-box text-end d-none d-xl-block">
-            <span class="fs-6 text-muted">For Support?</span>
-            <h5 class="mb-0">+980-34984089</h5>
-          </div>
-
-          <ul class="d-flex justify-content-end list-unstyled m-0">
-            <li>
-                  <a href="#" class="rounded-circle bg-light p-2 mx-1">
-                    <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="rounded-circle bg-light p-2 mx-1">
-                    <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-                  </a>
-                </li>
-                <li class="d-lg-none">
-                  <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-                    <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cart"></use></svg>
-                  </a>
-                </li>
-                <li class="d-lg-none">
-                  <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSearch" aria-controls="offcanvasSearch">
-                    <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#search"></use></svg>
-                  </a>
-                </li>
-          </ul>
-
-          <a style="text-decoration: none;" href="{% url "my-cart" %}">
-            <div class="cart text-end d-none d-lg-block">
-            <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button">
-              <span class="fs-6 text-muted">Your Cart</span>
-              <span class="cart-total fs-5 fw-bold">$1290.00</span>
-            </button>
-          </div>
-        </a>
-        </div>
-      </div>
-    </div>
-  </header>
-    <div class="container">
-        <div class="product-details-container">
-            <div class="product-images">
-                <div class="product-main-image">
-                    <img id="main-product-image" src="{% static '/images/sample_item/broccli1.jpeg' %}" alt="Broccoli Initiator Class 2.2">
-                </div>
-                <div class="product-thumbnails">
-                    <img src="{% static '/images/sample_item/broccli1.jpeg' %}" alt="Nike Initiator Class 2.2 - 1" data-image="{% static '/images/sample_item/broccli1.jpeg' %}">
-                    <img src="{% static '/images/sample_item/broccli2.jpeg' %}" alt="Nike Initiator Class 2.2 - 2" data-image="{% static '/images/sample_item/broccli2.jpeg' %}">
-                    <img src="{% static '/images/sample_item/broccli3.jpeg' %}" alt="Nike Initiator Class 2.2 - 3" data-image="{% static '/images/sample_item/broccli3.jpeg' %}">
-                    <img src="{% static '/images/sample_item/broccli4.jpeg' %}" alt="Nike Initiator Class 2.2 - 4" data-image="{% static '/images/sample_item/broccli4.jpeg' %}">
-                </div>
-            </div>
-            <div class="product-info">
-                <h1 class="product-title">Broccoli Initiator Class 2.2</h1>
-                <div class="product-review">
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="far fa-star"></i>
-                    <span>87 Customer Review</span>
-                </div>
-                <div class="product-price">
-                    <span>$125.00</span>
-                    <del>$160.00</del>
-                    <span>Save 23%</span>
-                </div>
-                <p class="product-availability">Only 3 Item(s) left in stock</p>
-
-                <div class="product-sizes">
-                    <h3>Select quantity</h3>
-                    <div class="size-options">
-                        <div class="size-option" data-size="UK 6.5">100g</div>
-                        <div class="size-option" data-size="UK 7">250g</div>
-                        <div class="size-option" data-size="UK 7.5">500g</div>
-                        <div class="size-option" data-size="UK 8">1kg</div>
-                        <div class="size-option" data-size="UK 8.5">5kg</div>
-                        <div class="size-option" data-size="UK 9">10kg</div>
+            <!-- Product Info and Actions -->
+            <div class="md:w-1/2 flex flex-col justify-between">
+                <div>
+                    <h2 id="productName" class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">{{product.item_name}} ({{product.quantity}})</h2>
+                    <p id="productCategory" class="text-lg text-gray-600 mb-2">Category: {{product.item_subcategory.category.category}}</p>
+                    <p id="productCategory" class="text-lg text-gray-600 mb-2">Sub Category: {{product.item_subcategory.sub_catagory_name}}</p>
+                      <div class="mb-4">
+                        <p id="originalPrice" class="text-lg text-gray-500 line-through">₹{{product.item_price}}</p>
+                        <p id="discountPercentage" class="text-sm text-red-600 font-semibold mb-1">{{product.item_discount_percentage}}% Off</p>
+                        <p id="productPrice" class="text-4xl font-extrabold text-green-700">₹{{discounted_price}}</p>
                     </div>
+                    <p id="productDescription" class="text-gray-700 leading-relaxed mb-6 p-1 max-h-20 overflow-y-auto">
+                      {{product.item_description}}
+                    </p>
                 </div>
-                <button class="add-to-cart btn btn-light">Add to Cart</button>
-                <button class="add-to-favorites btn btn-outline-light">
-                    <i class="far fa-heart"></i>
-                    Favorite
-                </button>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button id="addToCartButton"
+                            class="flex-1 bg-blue-400 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Add to Cart
+                    </button>
+                    <button id="addToWishlistButton"
+                            class="flex-1 bg-yellow-400 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                        Add to Wishlist
+                    </button>
+                </div>
+                <div id="actionMessage" class="mt-4 text-center text-sm text-gray-700 hidden"></div>
             </div>
-        </div>
-        <div class="product-description">
-            <h3>About the product</h3>
-            <p>Go the distance in comfort with the Nike Initiator. Designed for breathability and soft cushioning, this running shoe provides the support you need to hit your stride with confidence.</p>
-            <ul>
-                <li>Color: Light Bone/Limestone/Olive Aura/Khaki</li>
-                <li>Style: NY7576-021</li>
-                <li>Origin: Vietnam Red</li>
-            </ul>
-        </div>
+        </section>
+
+        <!-- More Products Like This Section (Carousel) -->
+        {% if variant_products %}
+        <section class="mb-12 p-5 bg-purple-50 rounded-lg shadow-md border border-purple-200">
+            <h2 class="text-2xl font-bold text-purple-800 mb-6">More Products Like This</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in variant_products %}
+              <div class="product-item">
+                  <span class="badge bg-success position-absolute m-3">-{{item.discount_percentage}}%</span>
+                  <a href="{% url "variant-detail" item.uuid %}" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                  <figure>
+                    <a href="{% url "variant-detail" item.uuid %}" title="{{item.variant_name}}">
+                      {% if item.item_image.image %}
+                          <img src="{{ product.item_image.image.url }}" alt="item_image" class="tab-image">
+                      {% else %}
+                          <img src="{% static "/images/placeholder.jpg" %}" alt="item_image" class="tab-image">
+                      {% endif %}
+                    </a>
+                  </figure>
+                  <h3>{{item.variant_name}}</h3>
+                  <div class="qty">{{item.quantity}}</div>
+                  <span class="rating">
+                      <svg width="24" height="24" class="text-primary" style="display:inline;"><use xlink:href="#star-solid"></use></svg><span>{{ product.rating }}</span>
+                  </span>
+                  <span class="price">₹{{item.price}}</span>
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="input-group product-qty">
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
+                              <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                            </button>
+                        </span>
+                        <input type="text" id="quantity" name="quantity" class="form-control input-number" value="0">
+                        <span class="input-group-btn">
+                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
+                                <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                            </button>
+                        </span>
+                    </div>
+                    <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
+                  </div>
+                </div>
+              {% empty %}
+                <p class="text-gray-500 text-center py-4 w-full">No similar products found.</p>
+            {% endfor %}
+              </div>
+          </section>
+        {% endif %}
+
+        <!-- Reviews Section -->
+        <section class="p-5 bg-green-50 rounded-lg shadow-md border border-green-200">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-green-800">Customer Reviews</h2>
+            </div>
+                {% if reviews%}
+                    {% for review in reviews %}
+                        <div class="space-y-6">
+                            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                                <div class="flex items-center mb-2">
+                                    <span class="font-semibold text-gray-800 mr-2">{{review.customer.}}</span>
+                                    <span class="text-yellow-500 text-lg">{{review.stars}}</span>
+                                </div>
+                                <p class="text-gray-700">"{{review.comment}}"</p>
+                                <p class="text-gray-500 text-sm mt-2">Reviewed on: {{review.created_at.date}}</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                            <p id="noReviews" class="text-gray-500 text-center py-4">No reviews yet. Be the first to add one!</p>
+                    {% endfor %}
+                    {% else %}
+                    <p id="noReviews" class="text-gray-500 text-center py-4">No reviews yet.</p>
+                {% endif %}
+
+            
+            
+        </section>
     </div>
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
-    <script src="{% static '/js/product_detail.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1nqEd00tNqXrsRjMVeBZwTQRQIm6n" crossorigin="anonymous"></script>
-    <script id="django-messages-data" type="application/json">
+  </main>
+  <script>
         [
         {% if messages %}
             {% for message in messages %}
