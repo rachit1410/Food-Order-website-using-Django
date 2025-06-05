@@ -9,6 +9,7 @@ from uuid import UUID
 from django.contrib import messages
 from django.http import JsonResponse
 import json
+from django.core.cache import cache
 
 
 def home(request):
@@ -42,10 +43,18 @@ def item_detail(request, pk):
     try:
         categories = Category.objects.all()
         uuid = UUID(pk)
-        product = Item.objects.get(uuid=uuid)
+        if cache.get("product"):
+            product = cache.get("product")
+        else:
+            product = Item.objects.get(uuid=uuid)
+            cache.set("product", product, 60*10)
 
         # searching similar products
-        results = VariantItem.objects.filter(item=product)
+        if cache.get("variants"):
+            variants = cache.get("variants")
+        else:
+            variants = VariantItem.objects.filter(item=product)
+            cache.set("variants", variants, 60*10)
         
         reviews = Reviews.objects.filter(item=product)
 
@@ -58,7 +67,7 @@ def item_detail(request, pk):
                 "is_logged_in": request.user.is_authenticated,
                 "categories": categories
             },
-            "variant_products": results
+            "variant_products": variants
         }
 
         return render(request, "home/product_detail.html", context)
@@ -72,14 +81,19 @@ def variant_detail(request, pk):
     try:
         categories = Category.objects.all()
         uuid = UUID(pk)
-        product = VariantItem.objects.get(uuid=uuid)
         
-        reviews = Reviews.objects.filter(item=product.item)
+        if cache.get("variant"):
+            variant = cache.get("variant")
+        else:
+            variant = VariantItem.objects.get(uuid=uuid)
+            cache.set("variant", variant, 60*10)
 
+        reviews = Reviews.objects.filter(item=variant.item)
+        
         context = {
-            "product": product,
+            "product": variant,
             "reviews": reviews,
-            "discounted_price": get_discounted_price(price=product.price, discount=product.discount_percentage),
+            "discounted_price": get_discounted_price(price=variant.price, discount=variant.discount_percentage),
             "user": {
                 "is_seller": get_is_seller(request),
                 "is_logged_in": request.user.is_authenticated,
@@ -112,7 +126,10 @@ def search_filter(request):
     search = ItemDocument.search()
     
     if searched:
-        search = search.query(
+        if cache.get(searched):
+            search = cache.get(searched)
+        else:
+            search = search.query(
             Q(
                 "multi_match",
                 query=searched, 
@@ -125,8 +142,9 @@ def search_filter(request):
                     "item_brand.brand",
                 ],
                 fuzziness="AUTO"
+                )
             )
-        )
+            cache.set(searched, search, 60*10)
     
     if category != "":
         search = search.filter("match", item_subcategory__category__category=category)
@@ -159,13 +177,6 @@ def search_filter(request):
 
     total_items = search.count()
     
-    print("category:", category)
-    print("sub_cat:", sub_cat)
-    print("brand:", brand)
-    print("min_price:", min_price)
-    print("max_price:", max_price)
-    print("Elasticsearch query:", search.to_dict())
-    
     # pagination
     page_number = int(request.GET.get("page", 1))
     per_page = 30
@@ -176,7 +187,7 @@ def search_filter(request):
     search = search[start:start + per_page]
 
     results = search.execute()
-    
+
     products = []
     for hit in results:
         product = hit.to_dict()
@@ -333,72 +344,19 @@ def create_collection(request):
     return redirect("home")
 
 
-def search_for_collection(request):
-    if request.method == "GET":
-        searched = request.GET.get("q", "")
-        if searched:
-            search = ItemDocument.search()
-
-            search = search.query(
-                Q(
-                    "multi_match", query=searched, fields = [
-                        "item_name",
-                        "item_description",
-                        "quantity",
-                        "item_subcategory.sub_catagory_name",
-                        "item_subcategory.category.category",
-                        "item_brand.brand",
-                    ],
-                    fuzziness="AUTO"
-                )
-            )
-            seller = Seller.objects.get(username=request.user.username)
-            
-            
-            search=search.filter("term", seller=seller)
-
-            total_items = search.count()
-            results = search.execute()
-            
-            if total_items < 1:
-                return JsonResponse({
-                    "status": False,
-                    "message": "no results found",
-                    "data": {}
-                })
-
-            # Serialize results for JSON response
-            items = []
-            for hit in results:
-                item = hit.to_dict()
-                item['id'] = str(hit.meta.id)
-                items.append(item)
-
-            return JsonResponse({
-                "status": True,
-                "message": "items fetched",
-                "data": {
-                    "items": items,
-                }
-            })
-        return JsonResponse({
-            "status": False,
-            "message": "search term not provided",
-            "data": {}
-        })
-
-
 def delete_collecton(request, pk):
     uuid = UUID(pk)
     collection = Collection.objects.get(pk=uuid)
     seller = Seller.objects.get(username=request.user.username)
     if collection.seller == seller:
         collection.delete()
+        if cache.get(pk):
+            cache.delete(pk)
         messages.success(request, "Collection deleted")
     else:
         messages.error(request, "You are not authorized to perform this action.")
     return redirect("manage-collections")
-    
+
 def list_collections(request):
     is_logged_in = request.user.is_authenticated
     is_seller = get_is_seller(request)
@@ -429,7 +387,12 @@ def view_collection(request, pk):
         is_seller = get_is_seller(request)
         categories = Category.objects.all()
         uuid = UUID(pk)
-        collection = Collection.objects.get(uuid=uuid)
+        if cache.get(pk):
+            collection = cache.get(pk)
+        else:
+            collection = Collection.objects.get(uuid=uuid)
+            cache.set(pk, collection, 60*10)
+        
         context = {
             "collection": collection,
             "user": {

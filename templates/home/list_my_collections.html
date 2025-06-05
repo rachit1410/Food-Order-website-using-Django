@@ -3,7 +3,8 @@
 {% block title %}Manage Collections{% endblock %}
 {% block content %}
 {% include "components/nav_bar.html" with filters=user%}
-<main class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+<script src="https://cdn.tailwindcss.com"></script>
+<main class="min-h-screen flex bg-gray-100 items-center justify-center p-4 sm:p-6 lg:p-8">
     <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 lg:p-10 max-w-7xl w-full">
         <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center">Your Item Collections</h1>
         <p class="text-gray-600 text-center mb-8">Create a variety of collections with your products.</p>
@@ -32,7 +33,7 @@
                         <p class="text-gray-700 text-sm mb-3">{{ collection.collection.collection_description }}
                         <a href="{% url 'view-collection' collection.collection.pk %}" 
                             class="text-decoration-none text-blue-600 hover:text-blue-800 text-sm font-bold ml-1">
-                                View →
+                                View→
                         </a>
                         </p>
                         <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
@@ -53,7 +54,6 @@
             <p id="noCollections" class="text-gray-500 text-center mt-8 hidden">No collections available yet.</p>
         </section>
     </div>
-    <script src="https://cdn.tailwindcss.com"></script>
     <scripts src="{% static "js/my_collections.js" %}" ></script>
 </main>
     <script id="django-messages-data" type="application/json">
