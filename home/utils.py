@@ -9,7 +9,8 @@ import lorem
 import logging
 
 from home.models import Images, Category, SubCategory, Brand, Item, VariantItem
-from accounts.models import Seller, Customer
+from accounts.models import Seller
+from home.models import Collection
 
 
 def save_image_from_url(image_url):
@@ -41,6 +42,7 @@ def save_image_from_url(image_url):
         print(f"Error saving image: {e}")
         return None
 
+
 def get_discount(mrp_str, selling_price_str):
     """Calculates discount percentage from MRP and selling price strings."""
     try:
@@ -63,7 +65,8 @@ def get_rating():
 def get_sku(product_name, unique_skus):
     """Generates a unique SKU based on product name and random digits."""
     base_sku = ''.join(word[0].upper() for word in product_name.split() if word)
-    if not base_sku: # Fallback for empty product names
+
+    if not base_sku:  # Fallback for empty product names
         base_sku = "PROD"
 
     # Ensure uniqueness
@@ -94,7 +97,7 @@ def exceltodatabase():
                     category, _ = Category.objects.get_or_create(category=row['Category'])
                     sub_category, _ = SubCategory.objects.get_or_create(sub_catagory_name=row['Sub-Category'], category=category)
                     brand, _ = Brand.objects.get_or_create(brand=row['Brand'])
-                    seller = Seller.objects.get(username="seller")
+                    seller = Seller.objects.get(username="rachit")
                     product_name = row['Sku name']
                     image_url = row['Image']
                     mrp = row['MRP']
@@ -119,8 +122,7 @@ def exceltodatabase():
                         quantity=quantity,
                         item_image=image,
                     )
-                    
-                    
+
                     product_names.append(row['Sku name'])
                     print(product_name, " DONE ")
                 else:
@@ -134,27 +136,28 @@ def exceltodatabase():
                     price = int(mrp.split(" ")[1])
                     sku = get_sku(product_name=variant_name, unique_skus=unique_skus)
                     discount_percentage = get_discount(mrp_str=mrp, selling_price_str=selling_price)
-                    
+
                     duplicate_varient = VariantItem.objects.filter(variant_name=variant_name, quantity=quantity)
 
                     if quantity == item.quantity or duplicate_varient.exists():
                         continue
                     else:
                         VariantItem.objects.create(
-                                item = item,
-                                item_image = item_image,
-                                variant_name = variant_name,
-                                quantity = quantity,
-                                discount_percentage = discount_percentage,
-                                price = price,
-                                sku = sku,
+                            item=item,
+                            item_image=item_image,
+                            variant_name=variant_name,
+                            quantity=quantity,
+                            discount_percentage=discount_percentage,
+                            price=price,
+                            sku=sku,
                         )
-                        
+
                         print(variant_name, " DONE ")
-                    
+
         except Exception as e:
             print(e)
             continue
+
 
 def get_is_seller(request):
     user = None
@@ -164,7 +167,12 @@ def get_is_seller(request):
         return True
     return False
 
+
 def get_discounted_price(price, discount):
     if discount and price:
         return int(price-(price*discount/100))
     return 0
+
+
+def get_all_collections():
+    return Collection.objects.all()

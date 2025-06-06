@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from home.utils import get_is_seller, get_discounted_price
+from home.utils import get_is_seller, get_discounted_price, get_all_collections
 from home.models import (Collection, Category, Brand, SubCategory, Images, Item, VariantItem, Reviews)
 from accounts.models import Seller
 from home.documents import ItemDocument
@@ -17,14 +17,22 @@ def home(request):
     is_logged_in = request.user.is_authenticated
     if is_logged_in:
         is_seller = get_is_seller(request)
-    
+
     list_categories = Category.objects.all().order_by('category')
-    
+    cc = Collection.objects.get(uuid=UUID("efdab293-897c-4b82-b082-16537f7ecf07"))
+    cm = Collection.objects.get(uuid=UUID("51db04da-2496-4c48-9004-a723cdfb7b00"))
     context = {
         'is_logged_in': is_logged_in,
         'is_seller': is_seller,
         'query': {
             "categories": list_categories
+        },
+        'data': {
+          'collections': get_all_collections(),
+          'featured': {
+              'cc': cc,
+              "cm": cm
+          }
         }
     }
 
@@ -43,19 +51,19 @@ def item_detail(request, pk):
     try:
         categories = Category.objects.all()
         uuid = UUID(pk)
-        if cache.get("product"):
-            product = cache.get("product")
+        if cache.get(pk):
+            product = cache.get(pk)
         else:
             product = Item.objects.get(uuid=uuid)
-            cache.set("product", product, 60*10)
+            cache.set(pk, product, 60*10)
 
         # searching similar products
-        if cache.get("variants"):
-            variants = cache.get("variants")
+        if cache.get(pk+"variants"):
+            variants = cache.get(pk+"variants")
         else:
             variants = VariantItem.objects.filter(item=product)
-            cache.set("variants", variants, 60*10)
-        
+            cache.set(pk+"variants", variants, 60*10)
+
         reviews = Reviews.objects.filter(item=product)
 
         context = {
@@ -75,13 +83,13 @@ def item_detail(request, pk):
         print(e)
         messages.error(request, "something went wrong.")
         return redirect("home")
-    
+
 
 def variant_detail(request, pk):
     try:
         categories = Category.objects.all()
         uuid = UUID(pk)
-        
+
         if cache.get("variant"):
             variant = cache.get("variant")
         else:
@@ -89,7 +97,7 @@ def variant_detail(request, pk):
             cache.set("variant", variant, 60*10)
 
         reviews = Reviews.objects.filter(item=variant.item)
-        
+
         context = {
             "product": variant,
             "reviews": reviews,
@@ -109,12 +117,12 @@ def variant_detail(request, pk):
 
 
 def search_filter(request):
-    
+
     is_seller = None
     is_logged_in = request.user.is_authenticated
     if is_logged_in:
         is_seller = get_is_seller(request)
-    
+
     searched = request.GET.get("q", "")
     category = request.GET.get("cat", "")
     sub_cat = request.GET.get("subcat", "")
@@ -124,41 +132,41 @@ def search_filter(request):
     sort_by = request.GET.get("sort", "relevance")
 
     search = ItemDocument.search()
-    
+
     if searched:
         if cache.get(searched):
             search = cache.get(searched)
         else:
             search = search.query(
-            Q(
-                "multi_match",
-                query=searched, 
-                fields = [
-                    "item_name",
-                    "item_description",
-                    "quantity",
-                    "item_subcategory.sub_catagory_name",
-                    "item_subcategory.category.category",
-                    "item_brand.brand",
-                ],
-                fuzziness="AUTO"
+                Q(
+                    "multi_match",
+                    query=searched,
+                    fields=[
+                        "item_name",
+                        "item_description",
+                        "quantity",
+                        "item_subcategory.sub_catagory_name",
+                        "item_subcategory.category.category",
+                        "item_brand.brand",
+                    ],
+                    fuzziness="AUTO"
+                    )
                 )
-            )
             cache.set(searched, search, 60*10)
-    
+
     if category != "":
         search = search.filter("match", item_subcategory__category__category=category)
-    
-    if sub_cat!= "":
+
+    if sub_cat != "":
         search = search.filter("match", item_subcategory__sub_catagory_name=sub_cat)
-        
-    if brand!= "":
+
+    if brand != "":
         search = search.filter("match", item_brand__brand=brand)
-    
-    if min_price!= "":
+
+    if min_price != "":
         search = search.filter("range", item_price={"gte": min_price})
 
-    if max_price!= "":
+    if max_price != "":
         search = search.filter("range", item_price={"lte": max_price})
 
     # sorting
@@ -176,7 +184,7 @@ def search_filter(request):
         search = search.sort({sort_field: {"order": "asc"}})
 
     total_items = search.count()
-    
+
     # pagination
     page_number = int(request.GET.get("page", 1))
     per_page = 30
@@ -193,16 +201,16 @@ def search_filter(request):
         product = hit.to_dict()
         product['uuid'] = str(hit.meta.id)
         products.append(product)
-    
+
     start_index = (page_number - 1) * per_page + 1
     end_index = start_index + len(results) - 1
 
     list_categories = Category.objects.all().order_by('category')
-    
+
     # extraxting uuid and converting them into uuid object
     item_ids = [UUID(hit.meta.id) for hit in results if hasattr(hit.meta, "id")]
     list_brand = Brand.objects.filter(brand_items__in=item_ids).distinct()
-    
+
     list_sub_category = SubCategory.objects.filter(category__category=category)
 
     context = {
@@ -291,14 +299,14 @@ def create_collection(request):
         title = request.POST.get("title")
         description = request.POST.get("description")
         cover = request.FILES.get("cover_image")
-        
+
         items_json = request.POST.get("products")
-        
+
         try:
             items = json.loads(items_json) if items_json else []
         except Exception:
             items = []
-        
+
         image = Images.objects.create(
             image=cover
         )
@@ -328,7 +336,7 @@ def create_collection(request):
             "message": "Collection created",
             "data": {}
         })
-        
+
     if is_seller := get_is_seller(request):
         is_logged_in = request.user.is_authenticated
         categories = Category.objects.all()
@@ -357,11 +365,12 @@ def delete_collecton(request, pk):
         messages.error(request, "You are not authorized to perform this action.")
     return redirect("manage-collections")
 
+
 def list_collections(request):
     is_logged_in = request.user.is_authenticated
     is_seller = get_is_seller(request)
     categories = Category.objects.all()
-    collections = Collection.objects.all()
+    collections = get_all_collections()
     data = []
     for collection in collections:
         data.append(
@@ -381,6 +390,7 @@ def list_collections(request):
     }
     return render(request, "home/list_collections.html", context)
 
+
 def view_collection(request, pk):
     try:
         is_logged_in = request.user.is_authenticated
@@ -392,7 +402,7 @@ def view_collection(request, pk):
         else:
             collection = Collection.objects.get(uuid=uuid)
             cache.set(pk, collection, 60*10)
-        
+
         context = {
             "collection": collection,
             "user": {

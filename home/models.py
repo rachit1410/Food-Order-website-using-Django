@@ -14,28 +14,28 @@ class Base(models.Model):
 
 
 class Category(Base):
-    category = models.CharField(max_length=255, unique=True) # Added unique=True
-    
+    category = models.CharField(max_length=255, unique=True)
+
     class Meta:
-        verbose_name_plural = "Categories" # Corrected verbose_name_plural
+        verbose_name_plural = "Categories"
 
     def __str__(self):
         return self.category
 
 
 class SubCategory(Base):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories") # Changed related_name
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
     sub_catagory_name = models.CharField(max_length=255)
 
     class Meta:
-        unique_together = ('category', 'sub_catagory_name') # Added unique_together for better data integrity
+        unique_together = ('category', 'sub_catagory_name')
 
     def __str__(self):
         return f"{self.category.category} - {self.sub_catagory_name}"
 
 
 class Brand(Base):
-    brand = models.CharField(max_length=255, unique=True) # Added unique=True
+    brand = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.brand
@@ -50,7 +50,7 @@ class Images(Base):
 
 class Item(Base):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="my_items")
-    sku = models.CharField(max_length=255, unique=True) # Added unique=True
+    sku = models.CharField(max_length=255, unique=True)
     item_name = models.CharField(max_length=255)
     item_description = models.TextField()
     item_price = models.FloatField(default=1)
@@ -69,18 +69,17 @@ class VariantItem(Base):
     item = models.ForeignKey(Item, related_name="variants", on_delete=models.CASCADE)
     variant_name = models.CharField(max_length=255)
     item_image = models.ForeignKey(Images, related_name="variant_image", on_delete=models.SET_NULL, null=True, blank=True)
-    quantity = models.CharField(max_length=255) 
+    quantity = models.CharField(max_length=255)
     price = models.FloatField(default=1)
-    sku = models.CharField(max_length=255, unique=True) 
+    sku = models.CharField(max_length=255, unique=True)
     discount_percentage = models.IntegerField(default=0)
-
 
     def __str__(self):
         return f"{self.item.item_name} - {self.variant_name}"
 
 
 class Reviews(Base):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="my_reviews") 
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="my_reviews")
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="reviews")
     stars = models.CharField(max_length=10, choices=STAR_CHOICES)
     comment = models.TextField(blank=True, null=True)
@@ -91,21 +90,35 @@ class Reviews(Base):
 
 class Cart(Base):
     customer = models.ForeignKey(Customer, related_name="my_cart", on_delete=models.CASCADE)
-    items = models.ForeignKey(Item, related_name="carts", on_delete=models.CASCADE)
-    item_quantity = models.FloatField(default=1.00) 
     total_price = models.FloatField(default=0.00)
 
     def __str__(self):
         return f"Cart of {self.customer.username}"
 
 
+class CartItem(Base):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
+    item = models.ForeignKey(Item, related_name="carts", on_delete=models.CASCADE, null=True, blank=True)
+    item_quantity = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.cart.customer.username}'s cart item: {self.item.item_name}"
+
+
 class WishList(Base):
-    customer = models.ForeignKey(Customer, related_name="my_wishlist", on_delete=models.CASCADE) 
-    items = models.ForeignKey(Item, related_name="wishlisted_by", on_delete=models.CASCADE) 
-    availability = models.BooleanField(default=True)
+    customer = models.ForeignKey(Customer, related_name="my_wishlist", on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Wishlist of {self.customer.username}"
+
+
+class WishlistItems(Base):
+    wishlist = models.ForeignKey(WishList, on_delete=models.CASCADE, related_name="wish_items")
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="wishlists")
+    item_availability = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"item {self.item.item_name} of wishlist of {self.wishlist.customer.username}"
 
 
 class Status(Base):
@@ -117,10 +130,10 @@ class Status(Base):
 
 class CustomerOrder(Base):
     customer = models.ForeignKey(Customer, related_name="my_orders", on_delete=models.CASCADE)
-    items = models.ManyToManyField(Item, related_name="orders") 
+    items = models.ManyToManyField(Item, related_name="orders")
     status = models.ForeignKey(Status, related_name='order_status', on_delete=models.SET_NULL, null=True, blank=True)
-    order_date = models.DateTimeField(auto_now_add=True) 
-    total_amount = models.FloatField(default=0.00) 
+    order_date = models.DateTimeField(auto_now_add=True)
+    total_amount = models.FloatField(default=0.00)
 
     def __str__(self):
         return f"Order {self.uuid} by {self.customer.username}"

@@ -6,12 +6,13 @@ from home.models import (
     Images,
     Item,
     Reviews,
-    Cart,
-    WishList,
     Status,
     CustomerOrder,
     VariantItem,
-    Collection
+    Collection,
+    Cart,
+    CartItem,
+    WishList
 )
 
 
@@ -20,9 +21,10 @@ admin.site.register(Brand)
 admin.site.register(Images)
 admin.site.register(Item)
 admin.site.register(Reviews)
-admin.site.register(Cart)
-admin.site.register(WishList)
 admin.site.register(Status)
 admin.site.register(CustomerOrder)
 admin.site.register(VariantItem)
 admin.site.register(Collection)
+admin.site.register(Cart)
+admin.site.register(CartItem)
+admin.site.register(WishList)

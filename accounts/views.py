@@ -5,6 +5,7 @@ from django.contrib.auth import login, authenticate, logout, update_session_auth
 import re
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from home.models import Cart, WishList
 
 
 def register_customer(request):
@@ -53,6 +54,9 @@ def register_customer(request):
         user.set_password(password)
         user.save()
 
+        Cart.objects.create(customer=user)
+        WishList.objects.create(customer=user)
+
         return redirect('login')
 
     return render(request, "accounts/register_customer.html")
@@ -71,15 +75,14 @@ def register_seller(request):
         phone_number = request.POST.get('phone_number')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
-        
-        
+
         house_number = request.POST.get("house_number")
         colony = request.POST.get("colony")
         nearby_place = request.POST.get("nearby_place")
         city = request.POST.get("city")
         state = request.POST.get("state")
         postal_code = request.POST.get("postal_code")
-        country = request.POST.get("country")
+        country = request.POST.get("country", "India")
 
         # Regular expressions for validation
         seller_name__regex = r"^[a-zA-Z\s]+$"
@@ -87,10 +90,10 @@ def register_seller(request):
         email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 
         # Validate input
-        if not password==confirm_password:
+        if not password == confirm_password:
             messages.error(request, "password and confirm password does not match.")
             return redirect('register-seller')
-        
+
         if not re.match(seller_name__regex, seller_name):
             messages.error(request, "Invalid name. Only letters and spaces are allowed.")
             return redirect('register-seller')
@@ -122,6 +125,7 @@ def register_seller(request):
         )
 
         user = Seller.objects.create(
+            username=username,
             gst_number=gst_number,
             shop_id=shop_id,
             bmp_id=bmp_id,
@@ -143,7 +147,7 @@ def login_view(request):
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        
+
         if username is None and email is not None:
             username = User.objects.filter(email=email)[0].username
 
@@ -288,6 +292,7 @@ def my_account_seller(request):
         print(e)
         messages.error(request, "Something went wrong")
         return redirect('home')
+
 
 def upload_view(request):
     return render(request, "accounts/upload_file.html")

@@ -163,7 +163,7 @@
         </div>
       </div>
     </header>
-    
+  <!-- custom top slider --> 
     <section class="py-3" style="background-image: url('{% static '/images/background-pattern.jpg'%}');background-repeat: no-repeat;background-size: cover;">
       <div class="container-fluid">
         <div class="row">
@@ -248,7 +248,7 @@
                 </div>
               </div>
 
-            </div>
+          </div>
             <!-- / Banner Blocks -->
               
           </div>
@@ -277,7 +277,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-
+            <!-- category -->
             <div class="category-carousel swiper">
               <div class="swiper-wrapper">
                 <a href="index.html" class="nav-link category-item swiper-slide">
@@ -338,7 +338,7 @@
     </section>
 
 
-    <section class="py-5 overflow-hidden">
+    <section class="py-2 overflow-hidden">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
@@ -360,100 +360,26 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-
-            <div class="brand-carousel swiper">
+            <!-- collections -->
+          <div class="brand-carousel swiper">
               <div class="swiper-wrapper">
-                
-                <div class="swiper-slide">
-                  <div class="card mb-3 p-3 rounded-4 shadow border-0">
-                    <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="{% static '/images/product-thumb-11.jpg'%}" class="img-fluid rounded" alt="Card title">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body py-0">
-                          <p class="text-muted mb-0">Amber Jar</p>
-                          <h5 class="card-title">Honey best nectar you wish to get</h5>
+                {% for collection in data.collections %}
+                  <div class="swiper-slide">
+                    <div class="card mb-2 p-3 rounded-4 shadow border-0 collection-card-fixed-height">
+                      <div class="row g-0">
+                        <a href="{% url "view-collection" collection.uuid %}" class="card-body py-0 text-decoration-none d-sm-inline-flex">
+                        <div class="col-md-4">
+                          <img src="{{collection.collection_logo.image.url}}" class="img-fluid rounded" alt="Card title">
                         </div>
+                        <div class="col-md-8 m-1">
+                            <p class="text-muted mb-0">{{ collection.collection_description|slice:":40"}}{% if collection.collection_description|length > 30 %}...{% endif %}</p>
+                            <h6 class="card-title">{{collection.collection_name}}</h6>
+                        </div>
+                        </a>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="card mb-3 p-3 rounded-4 shadow border-0">
-                    <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="{% static '/images/product-thumb-12.jpg'%}" class="img-fluid rounded" alt="Card title">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body py-0">
-                          <p class="text-muted mb-0">Amber Jar</p>
-                          <h5 class="card-title">Honey best nectar you wish to get</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="card mb-3 p-3 rounded-4 shadow border-0">
-                    <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="{% static '/images/product-thumb-13.jpg'%}" class="img-fluid rounded" alt="Card title">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body py-0">
-                          <p class="text-muted mb-0">Amber Jar</p>
-                          <h5 class="card-title">Honey best nectar you wish to get</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="card mb-3 p-3 rounded-4 shadow border-0">
-                    <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="{% static '/images/product-thumb-14.jpg'%}" class="img-fluid rounded" alt="Card title">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body py-0">
-                          <p class="text-muted mb-0">Amber Jar</p>
-                          <h5 class="card-title">Honey best nectar you wish to get</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="card mb-3 p-3 rounded-4 shadow border-0">
-                    <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="{% static '/images/product-thumb-11.jpg'%}" class="img-fluid rounded" alt="Card title">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body py-0">
-                          <p class="text-muted mb-0">Amber Jar</p>
-                          <h5 class="card-title">Honey best nectar you wish to get</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="card mb-3 p-3 rounded-4 shadow border-0">
-                    <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="{% static '/images/product-thumb-12.jpg'%}" class="img-fluid rounded" alt="Card title">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body py-0">
-                          <p class="text-muted mb-0">Amber Jar</p>
-                          <h5 class="card-title">Honey best nectar you wish to get</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                {% endfor %}
                 
               </div>
             </div>
@@ -481,6 +407,9 @@
                   </div>
                 </nav>
               </div>
+
+              <!--  treading products  -->
+
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-all" role="tabpanel" aria-labelledby="nav-all-tab">
 
@@ -1172,7 +1101,7 @@
                   <!-- / product-grid -->
                   
                 </div>
-                
+
               </div>
             </div>
 
@@ -1186,26 +1115,24 @@
         <div class="row">
           
           <div class="col-md-6">
-            <div class="banner-ad bg-danger mb-3" style="background: url('{% static '/images/ad-image-3.png'%}');background-repeat: no-repeat;background-position: right bottom;">
+            <div class="banner-ad bg-danger mb-3" style="background: url('{{data.featured.cc.collection_logo.image.url}}'); background-repeat: no-repeat; background-position: right center; background-size: 200px auto;">
               <div class="banner-content p-5">
 
-                <div class="categories text-primary fs-3 fw-bold">Upto 25% Off</div>
-                <h3 class="banner-title">Luxa Dark Chocolate</h3>
-                <p>Very tasty & creamy vanilla flavour creamy muffins.</p>
-                <a href="#" class="btn btn-dark text-uppercase">Show Now</a>
-
+              <div class="categories text-primary fs-3 fw-bold">Upto 20% Off</div>
+              <h3 class="banner-title">{{data.featured.cc.collection_name}}</h3>
+              <p>{{data.featured.cc.collection_description}}.</p>
+              <a href="{% url "view-collection" data.featured.cc.uuid %}" class="btn btn-dark text-uppercase">Show Now</a>
               </div>
-            
             </div>
           </div>
           <div class="col-md-6">
-            <div class="banner-ad bg-info" style="background: url('{% static '/images/ad-image-4.png'%}');background-repeat: no-repeat;background-position: right bottom;">
+            <div class="banner-ad bg-info" style="background: url('{{data.featured.cm.collection_logo.image.url}}');background-repeat: no-repeat;background-position: right bottom;">
               <div class="banner-content p-5">
 
                 <div class="categories text-primary fs-3 fw-bold">Upto 25% Off</div>
-                <h3 class="banner-title">Creamy Muffins</h3>
-                <p>Very tasty & creamy vanilla flavour creamy muffins.</p>
-                <a href="#" class="btn btn-dark text-uppercase">Show Now</a>
+              <h3 class="banner-title">{{data.featured.cm.collection_name}}</h3>
+              <p>{{data.featured.cm.collection_description}}.</p>
+              <a href="{% url "view-collection" data.featured.cm.uuid %}" class="btn btn-dark text-uppercase">Show Now</a>
 
               </div>
             
@@ -1241,6 +1168,8 @@
 
             <div class="products-carousel swiper">
               <div class="swiper-wrapper">
+
+                <!-- best selling 8 items -->
                 
                 <div class="product-item swiper-slide">
                   <span class="badge bg-success position-absolute m-3">-15%</span>
@@ -1471,7 +1400,6 @@
                 
               </div>
             </div>
-            <!-- / products-carousel -->
 
           </div>
         </div>
@@ -1499,7 +1427,7 @@
                   </div>
                   <div class="mb-3">
                     <label for="" class="form-label">Email</label>
-                    <input type="email" class="form-control form-control-lg" name="email" id="email" placeholder="abc@mail.com">
+                    <input type="email" class="form-control form-control-lg" name="email" placeholder="abc@mail.com">
                   </div>
                   <div class="form-check form-check-inline mb-3">
                     <label class="form-check-label" for="subscribe">
@@ -1546,6 +1474,7 @@
 
             <div class="products-carousel swiper">
               <div class="swiper-wrapper">
+                <!-- most popular -->
                 
                 <div class="product-item swiper-slide">
                   <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
@@ -1785,7 +1714,7 @@
           <div class="col-md-12">
 
             <div class="section-header d-flex justify-content-between">
-              
+
               <h2 class="section-title">Just arrived</h2>
 
               <div class="d-flex align-items-center">
@@ -1793,10 +1722,10 @@
                 <div class="swiper-buttons">
                   <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
                   <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
-                </div>  
+                </div>
               </div>
             </div>
-            
+
           </div>
         </div>
         <div class="row">
@@ -2061,7 +1990,7 @@
         
       </div>
     </section>
-
+    <!-- popular searches -->
     <section class="py-5">
       <div class="container-fluid">
         <h2 class="my-5">People are also looking for</h2>
@@ -2303,7 +2232,13 @@
             <p>© 2025 FODE. All rights reserved.</p>
           </div>
           <div class="col-md-6 credit-link text-start text-md-end">
-            <p>Free HTML Template by <a href="https://templatesjungle.com/">TemplatesJungle</a> Distributed by <a href="https://themewagon">ThemeWagon</a></p>
+            <p>
+              Grocery store clone project by Rachit Kumar showcasing Core Django skills.
+              <a href="https://github.com/rachit1410" target="_blank" rel="noopener">
+              Visit my GitHub 
+              <i class="fa fa-github" style="font-size:24px"></i>
+              </a>
+            </p>
           </div>
         </div>
       </div>
