@@ -118,7 +118,7 @@
                                   </button>
                               </span>
                           </div>
-                          <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
+                          <a href="#" class="nav-link addtocart-btn">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
                         </div>
                       </div>
                     {% endfor %}
@@ -166,7 +166,7 @@
             </div>
         </div>
     </div>
-
+    <script src="{% static "js/add-to-cart.js" %}"></script>
     <script id="django-messages-data" type="application/json">
         [
         {% if messages %}

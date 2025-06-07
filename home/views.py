@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from home.utils import get_is_seller, get_discounted_price, get_all_collections
-from home.models import (Collection, Category, Brand, SubCategory, Images, Item, VariantItem, Reviews)
+from home.utils import get_is_seller, get_discounted_price, get_all_collections, get_cart_total
+from home.models import (Collection, Category, Brand, SubCategory, Images, Item, VariantItem, Reviews, Cart)
 from accounts.models import Seller
 from home.documents import ItemDocument
 from elasticsearch_dsl import Q
@@ -73,7 +73,8 @@ def item_detail(request, pk):
             "user": {
                 "is_seller": get_is_seller(request),
                 "is_logged_in": request.user.is_authenticated,
-                "categories": categories
+                "categories": categories,
+                "cart_total": get_cart_total(request)
             },
             "variant_products": variants
         }
@@ -229,6 +230,7 @@ def search_filter(request):
             "sub_cats": list_sub_category,
             "is_logged_in": is_logged_in,
             "is_seller": is_seller,
+            "cart_total": get_cart_total(request)
         },
         "data": {
             "count": total_items,
@@ -259,8 +261,22 @@ def upi_pay(request):
     return render(request, "home/upi-pay.html")
 
 
+@login_required(login_url="login")
 def cart(request):
-    return render(request, "home/cart.html")
+    try:
+        cart = Cart.objects.get(customer__id=request.user.id)
+        context = {
+            "cart": cart,
+            "user": {
+                "is_seller": get_is_seller(request),
+                "is_logged_in": True,
+                "categories": Category.objects.all()
+            }
+        }
+        return render(request, "home/cart.html", context)
+    except Cart.DoesNotExist:
+        print("not a customer")
+        return redirect("home")
 
 
 def thank(request):
@@ -408,7 +424,8 @@ def view_collection(request, pk):
             "user": {
                 "is_logged_in": is_logged_in,
                 "is_seller": is_seller,
-                "categories": categories
+                "categories": categories,
+                "cart_total": get_cart_total(request)
             }
         }
         return render(request, "home/view_collection.html", context)

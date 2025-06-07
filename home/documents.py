@@ -2,6 +2,7 @@ from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 from home.models import Item
 
+
 @registry.register_document
 class ItemDocument(Document):
     item_name = fields.TextField(
@@ -30,14 +31,14 @@ class ItemDocument(Document):
         },
         attr='item_brand'
     )
-    
+
     item_image = fields.ObjectField(
         properties={
             "image": fields.FileField()
         },
         attr="item_image"
     )
-    
+
     seller = fields.ObjectField(
         properties={
             "username": fields.KeywordField()
@@ -77,7 +78,7 @@ class ItemDocument(Document):
         return {
             "brand": brand.brand
         }
-    
+
     def prepare_item_image(self, instance):
         image = instance.item_image
         if not image:
@@ -85,4 +86,3 @@ class ItemDocument(Document):
         return {
             "image": image.image.url
         }
-

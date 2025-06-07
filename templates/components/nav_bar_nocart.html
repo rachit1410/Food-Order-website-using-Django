@@ -21,8 +21,8 @@
                 <div class="col-md-4">
                     <select id="categoryChoice" name="cat" class="form-select border-0 bg-transparent">
                         <option value="">All Categories</option>
-                        {% if categories %}
-                            {% for category in categories %}
+                        {% if filters.categories %}
+                            {% for category in filters.categories %}
                                 <option value="{{ category.category }}">{{ category.category }}</option>
                             {% endfor %}
                         {% else %}
@@ -52,16 +52,36 @@
                 </div>
 
                 <ul class="flex justify-end items-center space-x-2 list-none m-0">
-            <li>
-                <a href="{% url "my-account" %}" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+            {% if filters.is_logged_in %}
+                <li>
+                  <a href="{% if filters.is_seller %}{% url "my-account-seller" %}{% else %}{% url "my-account" %}{% endif %}" class="d-flex align-items-center justify-content-center rounded-circle bg-light p-2 mx-1" style="width:40px; height:40px;">
                     <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-light p-2 mx-1" style="width:40px; height:40px;">
                     <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
+                  </a>
+                </li>
+                <li class="d-lg-none">
+                <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cart"></use></svg>
                 </a>
-            </li>
+              </li>
+              <li class="d-lg-none">
+                <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSearch" aria-controls="offcanvasSearch">
+                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#search"></use></svg>
+                </a>
+              </li>
+            </ul>
+              {% else %}
+                <li>
+                  <a href="{% url "login" %}" class="btn btn-outline-light rounded-end rounded-0" >Login</a>
+                </li>
+                <li>
+                  <a href="{% url "register-customer" %}" class="btn btn-outline-light mx-2 rounded-end rounded-0" >Resister</a>
+                </li>
+              {% endif %}
             </ul>
                 </div>
             </div>

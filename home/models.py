@@ -2,6 +2,8 @@ from django.db import models
 import uuid
 from accounts.models import Seller, Customer
 from home.choices import STAR_CHOICES
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Base(models.Model):
@@ -100,9 +102,24 @@ class CartItem(Base):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
     item = models.ForeignKey(Item, related_name="carts", on_delete=models.CASCADE, null=True, blank=True)
     item_quantity = models.IntegerField(default=0)
+    total_price = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.cart.customer.username}'s cart item: {self.item.item_name}"
+
+
+@receiver(post_save, sender=CartItem)
+def update_cart_total_price(sender, instance, **kwargs):
+    discounted_price = instance.item.item_price - (instance.item.item_price * instance.item.item_discount_percentage / 100)
+    CartItem.objects.filter(pk=instance.pk).update(
+        total_price=discounted_price * instance.item_quantity
+    )
+    cart = instance.cart
+    total = sum(
+        (cartitem.item.item_price - (cartitem.item.item_price * cartitem.item.item_discount_percentage / 100)) * cartitem.item_quantity
+        for cartitem in cart.cart_items.all() if cartitem.item
+    )
+    Cart.objects.filter(pk=cart.pk).update(total_price=int(total))
 
 
 class WishList(Base):

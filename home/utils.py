@@ -8,7 +8,7 @@ import string
 import lorem
 import logging
 
-from home.models import Images, Category, SubCategory, Brand, Item, VariantItem
+from home.models import Images, Category, SubCategory, Brand, Item, VariantItem, Cart
 from accounts.models import Seller
 from home.models import Collection
 
@@ -176,3 +176,12 @@ def get_discounted_price(price, discount):
 
 def get_all_collections():
     return Collection.objects.all()
+
+
+def get_cart_total(request):
+    try:
+        cart = Cart.objects.get(customer__id=request.user.id)
+        return cart.total_price
+    except Cart.DoesNotExist:
+        print("not customer")
+        return 0

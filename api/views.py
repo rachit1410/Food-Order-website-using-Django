@@ -4,7 +4,6 @@ from elasticsearch_dsl import Q
 from home.models import Cart, CartItem, Item, WishList, WishlistItems
 from accounts.models import Customer
 from uuid import UUID
-from home.utils import get_discounted_price
 
 
 def search_for_collection(request):
@@ -70,13 +69,19 @@ def add_to_cart(request):
 
             cart = Cart.objects.get(customer=customer[0])
 
-            CartItem.objects.create(
+            if CartItem.objects.filter(
                 item=item,
                 cart=cart,
-                item_quantity=item_quantity
-            )
-
-            cart.total_price += get_discounted_price(item.item_price)
+            ).exists():
+                cart_item = CartItem.objects.get(item=item, cart=cart)
+                cart_item.item_quantity = int(cart_item.item_quantity)+int(item_quantity)
+                cart_item.save()
+            else:
+                CartItem.objects.create(
+                    item=item,
+                    cart=cart,
+                    item_quantity=int(item_quantity)
+                )
 
             return JsonResponse({
                 "status": True,
@@ -108,16 +113,27 @@ def add_to_wishlist(request):
 
             wishlist = WishList.objects.get(customer=customer[0])
 
-            WishlistItems.objects.create(
+            if wishlistitem := WishlistItems.objects.filter(
                 item=item,
                 wishlist=wishlist,
-            )
+            ):
+                wishlistitem.delete()
+                return JsonResponse({
+                    "status": True,
+                    "message": "item removed from wishlist",
+                    "data": {}
+                })
+            else:
+                WishlistItems.objects.create(
+                    item=item,
+                    wishlist=wishlist,
+                )
 
-            return JsonResponse({
-                "status": True,
-                "message": "item added to wishlist",
-                "data": {}
-            })
+                return JsonResponse({
+                    "status": True,
+                    "message": "item added to wishlist",
+                    "data": {}
+                })
         except Exception as e:
             print(e)
             return JsonResponse({
