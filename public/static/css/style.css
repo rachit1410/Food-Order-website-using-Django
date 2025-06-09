@@ -574,24 +574,7 @@ h1,h2,h3,h4,h5,h6 {
   max-height: 210px;
   height: auto;
 }
-.product-item .btn-wishlist {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border: 1px solid #d8d8d8;
-  transition: all 0.3s ease-out;
-}
-.product-item .btn-wishlist:hover {
-  background: rgb(240, 56, 56);
-  color: #fff;
-}
+
 .product-item .qty {
   font-weight: 400;
   font-size: 13px;

@@ -6,6 +6,7 @@ import re
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from home.models import Cart, WishList
+from home.utils import get_is_seller
 
 
 def register_customer(request):
@@ -206,7 +207,8 @@ def my_account(request):
                     messages.success(request, 'password changed successfully')
                 else:
                     messages.error(request, "Passwords do not match")
-            return redirect('my-account')  # Redirect after *any* POST action
+            return redirect('my-account')
+        from home.models import Category
         context = {
             "profile": {
                 "name": account.name,
@@ -214,14 +216,19 @@ def my_account(request):
                 "email": account.email,
                 "phone_number": account.phone_number,
                 "address": {
-                        "postal_code": account.address.postal_code,
-                        "colony": account.address.colony,
-                        "nearby_place": account.address.nearby_place,
-                        "city": account.address.city,
-                        "state": account.address.state,
-                        "country": account.address.country,
+                    "postal_code": account.address.postal_code,
+                    "colony": account.address.colony,
+                    "nearby_place": account.address.nearby_place,
+                    "city": account.address.city,
+                    "state": account.address.state,
+                    "country": account.address.country,
                     }
-                }
+            },
+            "user": {
+                "is_seller": get_is_seller(request),
+                "is_logged_in": True,
+                "categories": Category.objects.all()
+            }
         }
 
         return render(request, "accounts/myaccountcustomer.html", context)

@@ -121,7 +121,9 @@ def add_to_wishlist(request):
                 return JsonResponse({
                     "status": True,
                     "message": "item removed from wishlist",
-                    "data": {}
+                    "data": {
+                        "action": False
+                    }
                 })
             else:
                 WishlistItems.objects.create(
@@ -132,7 +134,9 @@ def add_to_wishlist(request):
                 return JsonResponse({
                     "status": True,
                     "message": "item added to wishlist",
-                    "data": {}
+                    "data": {
+                        "action": True
+                    }
                 })
         except Exception as e:
             print(e)

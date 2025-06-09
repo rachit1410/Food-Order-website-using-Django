@@ -185,3 +185,14 @@ def get_cart_total(request):
     except Cart.DoesNotExist:
         print("not customer")
         return 0
+
+
+def is_wishlisted(request, product):
+    """
+    Returns True if the current user has wishlisted the given product, else False.
+    Assumes a related_name='wishlists' on the wishlist-product relationship.
+    """
+    user = getattr(request, "user", None)
+    if not user or not user.is_authenticated:
+        return False
+    return product.wishlists.filter(wishlist__customer__pk=user.pk).exists()

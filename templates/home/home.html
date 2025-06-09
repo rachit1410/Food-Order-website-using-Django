@@ -65,11 +65,11 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#" class="rounded-circle bg-light p-2 mx-1">
+                  <a href="wishlist" class="rounded-circle bg-light p-2 mx-1">
                     <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
                   </a>
                 </li>
-                              <li class="d-lg-none">
+                <li class="d-lg-none">
                 <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
                   <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cart"></use></svg>
                 </a>
@@ -1101,23 +1101,18 @@
                   <!-- / product-grid -->
                   
                 </div>
-
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </section>
-
     <section class="py-5">
       <div class="container-fluid">
         <div class="row">
-          
           <div class="col-md-6">
             <div class="banner-ad bg-danger mb-3" style="background: url('{{data.featured.cc.collection_logo.image.url}}'); background-repeat: no-repeat; background-position: right center; background-size: 200px auto;">
               <div class="banner-content p-5">
-
               <div class="categories text-primary fs-3 fw-bold">Upto 20% Off</div>
               <h3 class="banner-title">{{data.featured.cc.collection_name}}</h3>
               <p>{{data.featured.cc.collection_description}}.</p>
@@ -1128,30 +1123,22 @@
           <div class="col-md-6">
             <div class="banner-ad bg-info" style="background: url('{{data.featured.cm.collection_logo.image.url}}');background-repeat: no-repeat;background-position: right bottom;">
               <div class="banner-content p-5">
-
                 <div class="categories text-primary fs-3 fw-bold">Upto 25% Off</div>
               <h3 class="banner-title">{{data.featured.cm.collection_name}}</h3>
-              <p>{{data.featured.cm.collection_description}}.</p>
+              <p>{{data.featured.cm.collection_description}}</p>
               <a href="{% url "view-collection" data.featured.cm.uuid %}" class="btn btn-dark text-uppercase">Show Now</a>
-
               </div>
-            
             </div>
           </div>
-             
         </div>
       </div>
     </section>
-
     <section class="py-5 overflow-hidden">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-
             <div class="section-header d-flex flex-wrap justify-content-between my-5">
-              
               <h2 class="section-title">Best selling products</h2>
-
               <div class="d-flex align-items-center">
                 <a href="#" class="btn-link text-decoration-none">View All Categories →</a>
                 <div class="swiper-buttons">
@@ -1160,17 +1147,13 @@
                 </div>  
               </div>
             </div>
-            
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-
             <div class="products-carousel swiper">
               <div class="swiper-wrapper">
-
                 <!-- best selling 8 items -->
-                
                 <div class="product-item swiper-slide">
                   <span class="badge bg-success position-absolute m-3">-15%</span>
                   <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>

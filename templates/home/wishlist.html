@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+    {% block title %}My Wishlist{% endblock %}
+    {% block style %}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static "/css/cart.css" %}">
+    {% endblock %}
+    
+{% block content %}
+
+{% include "components/nav_bar_nocart.html" with filters=user %}
+<script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
+<main class="bg-gray-100 font-inter">
+    <div class="container mx-auto mt-8 p-4">
+        <h1 class="text-3xl font-semibold text-gray-900 text-center mb-6">Your Wishlist</h1>
+        
+        <div id="cart-items" class="bg-white shadow-md rounded-lg p-4 mb-6">
+          {% if wishlist and wishlist.wish_items and wishlist.wish_items.all|length > 0 %}
+            {% for wishListItem in wishlist.wish_items.all %}
+              <div class="flex items-center justify-between border-bottom border-light-blue py-4">
+                <a href="{% url "item-detail" wishListItem.item.uuid %}" class="flex item-center text-decoration-none">
+                  <img src="{{ wishListItem.item.item_image.image.url }}" alt="no image" class="w-20 h-20 rounded-md mr-4">
+                </a>
+                <div class="flex flex-col">
+                  <span class="text-lg font-semibold text-gray-900">{{wishListItem.item.item_name}}</span>
+                  <span class="text-gray-700">Price - ₹{{wishListItem.item.item_price}}
+                </div>
+                <div class="flex item-center">
+                  {% if wishListItem.item_availability %}
+                    <span class="text-lg font-semibold text-gray-900 ml-2">In Stock</span>
+                    {% else %}
+                    <span class="text-lg font-semibold text-gray-700 ml-2">Out of Stock</span>
+                  {% endif %}
+                  <span class="text-lg font-semibold ml-6">
+                    <a href="{% url "remove-w" wishListItem.uuid %}" title="remove from cart" class="text-decoration-none text-red-500 hover:text-red-700 transition-colors duration-200 ">✕</a>
+                  </span>
+                </div>
+              </div>
+            {% endfor %}
+            {% else %}
+            <p class="text-gray-500 text-center py-4">Your wishlist is empty.</p>
+          {% endif %}
+        </div>
+
+</main>
+
+    <script id="django-messages-data" type="application/json">
+        [
+        {% if messages %}
+            {% for message in messages %}
+            {
+                "type": "{{ message.tags }}",
+                "message": "{{ message }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        {% endif %}
+        ]
+    </script>
+
+{% endblock %}

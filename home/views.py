@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from home.utils import get_is_seller, get_discounted_price, get_all_collections, get_cart_total
-from home.models import (Collection, Category, Brand, SubCategory, Images, Item, VariantItem, Reviews, Cart)
+from home.utils import get_is_seller, get_discounted_price, get_all_collections, get_cart_total, is_wishlisted
+from home.models import (Collection, Category, Brand, SubCategory, Images, Item, VariantItem, Reviews, Cart, CartItem, WishList, WishlistItems)
 from accounts.models import Seller
 from home.documents import ItemDocument
 from elasticsearch_dsl import Q
@@ -76,7 +76,8 @@ def item_detail(request, pk):
                 "categories": categories,
                 "cart_total": get_cart_total(request)
             },
-            "variant_products": variants
+            "variant_products": variants,
+            "is_wishlisted": is_wishlisted(request, product)
         }
 
         return render(request, "home/product_detail.html", context)
@@ -277,6 +278,77 @@ def cart(request):
     except Cart.DoesNotExist:
         print("not a customer")
         return redirect("home")
+
+
+@login_required(login_url="login")
+def remove_from_cart(request, pk):
+    try:
+        uuid = UUID(pk)
+        cartitem = CartItem.objects.get(uuid=uuid)
+        if cartitem:
+            cartitem.cart.total_price = cartitem.cart.total_price - cartitem.total_price
+            cartitem.cart.save()
+            cartitem.delete()
+        messages.success(request, "item removed successfully")
+        return redirect("my-cart")
+    except CartItem.DoesNotExist:
+        messages.error(request, "Item not found.")
+        return redirect("my-cart")
+
+
+@login_required(login_url="login")
+def Wishlist(request):
+    try:
+        wishList = WishList.objects.get(customer__id=request.user.id)
+        context = {
+            "wishlist": wishList,
+            "user": {
+                "is_seller": get_is_seller(request),
+                "is_logged_in": True,
+                "categories": Category.objects.all()
+            }
+        }
+        return render(request, "home/wishlist.html", context)
+    except WishList.DoesNotExist:
+        print("not a customer")
+        return redirect("home")
+
+
+def add_to_wishlist(request, pk):
+    try:
+        uuid = UUID(pk)
+        item = Item.objects.get(uuid=uuid)
+        wishlist = WishList.objects.get(customer__pk=request.user.pk)
+        if not WishlistItems.objects.filter(
+                item=item,
+                wishlist=wishlist
+        ).exists():
+            WishlistItems.objects.create(
+                item=item,
+                wishlist=wishlist
+            )
+            messages.success(request, "item added to wishlist.")
+        else:
+            messages.info(request, "already in the wishlist.")
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+    except Exception as e:
+        print(e)
+        messages.error(request, "Something went wrong.")
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+
+
+@login_required(login_url="login")
+def remove_from_wishlist(request, pk):
+    try:
+        uuid = UUID(pk)
+        wishlistitem = WishlistItems.objects.get(uuid=uuid)
+        if wishlistitem:
+            wishlistitem.delete()
+        messages.success(request, "item removed successfully")
+        return redirect("wishlist")
+    except CartItem.DoesNotExist:
+        messages.error(request, "Item not found.")
+        return redirect("wishlist")
 
 
 def thank(request):

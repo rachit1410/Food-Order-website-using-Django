@@ -3,20 +3,19 @@
     {% block title %}My Cart{% endblock %}
     {% block style %}
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-        <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
         <link rel="stylesheet" href="{% static "/css/cart.css" %}">
     {% endblock %}
     
 {% block content %}
 
 {% include "components/nav_bar_nocart.html" with filters=user %}
-
+<script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
 <main class="bg-gray-100 font-inter">
     <div class="container mx-auto mt-8 p-4">
         <h1 class="text-3xl font-semibold text-gray-900 text-center mb-6">Your Cart</h1>
         
         <div id="cart-items" class="bg-white shadow-md rounded-lg p-4 mb-6">
-          {% if cart and cart.cart_items %}
+          {% if cart and cart.cart_items and cart.cart_items.all|length > 0 %}
             {% for cartItem in cart.cart_items.all %}
               <div class="flex items-center justify-between border-bottom border-light-blue py-4">
                 <a href="{% url "item-detail" cartItem.item.uuid %}" class="flex item-center text-decoration-none">
@@ -29,9 +28,14 @@
                 <div class="flex item-center">
                   <span class="text-lg font-semibold text-gray-900 ml-2">Qty {{cartItem.item_quantity}}</span>
                   <span class="text-lg font-semibold text-gray-900 ml-6">₹{{cartItem.total_price}}</span>
+                  <span class="text-lg font-semibold ml-6">
+                    <a href="{% url "remove" cartItem.uuid %}" title="remove from cart" class="text-decoration-none text-red-500 hover:text-red-700 transition-colors duration-200 ">✕</a>
+                  </span>
                 </div>
               </div>
             {% endfor %}
+            {% else %}
+            <p class="text-gray-500 text-center py-4">Your cart is empty.</p>
           {% endif %}
         </div>
 

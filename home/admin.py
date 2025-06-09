@@ -12,7 +12,8 @@ from home.models import (
     Collection,
     Cart,
     CartItem,
-    WishList
+    WishList,
+    WishlistItems
 )
 
 
@@ -28,3 +29,4 @@ admin.site.register(Collection)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 admin.site.register(WishList)
+admin.site.register(WishlistItems)

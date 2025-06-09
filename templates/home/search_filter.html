@@ -7,25 +7,20 @@
     <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
     <link rel="stylesheet" href="{% static "/css/search.css" %}">
 {% endblock %}
-
 {% block content %}
-
 {% include "components/nav_bar.html" with filters=query_list %}
 
 <main class="bg-gray-100 font-inter">
     <div class="container mx-auto mt-8 p-4">
         <h1 class="text-3xl font-semibold text-gray-900 text-center mb-6">Search and Filter</h1>
-
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <form method="GET" action="{% url "search" %}" class="md:col-span-1">
                 <div class="bg-white shadow-md rounded-lg p-6">
                     <h2 class="text-xl font-semibold text-gray-900 mb-4">Filters ({{data.count}})</h2>
-
                     <div class="mb-4">
                         <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Search</label>
                         <input type="text" name="q" id="search" value="{{query.searched}}" placeholder="Search products..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" />
                     </div>
-
                     <div class="mb-4">
                         <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Category</label>
                         <select name="cat" id="category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" >
@@ -35,7 +30,6 @@
                             {% endfor %}
                         </select>
                     </div>
-
                     <div class="mb-4">
                         <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Sub Category</label>
                         <select name="subcat" id="sub-category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" >
@@ -45,7 +39,6 @@
                             {% endfor %}
                         </select>
                     </div>
-
                     <div class="mb-4">
                         <label for="search" class="block text-gray-700 text-sm font-bold mb-2">Brand</label>
                         <select name="br" id="brand" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue" >
@@ -55,7 +48,6 @@
                             {% endfor %}
                         </select>
                     </div>
-
                     <div class="mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Price Range</h3>
                         <div class="space-y-2">
@@ -65,7 +57,6 @@
                             <input type="number" name="maxp" id="max-price" placeholder="1000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
                         </div>
                     </div>
-
                     <div class="mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Sort By</h3>
                         <select name="sort" id="sort" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-light-blue">
@@ -76,19 +67,17 @@
                             <option value="-item_name" {% if query.sort_by == "-item_name" %}selected{% endif %}>Name: Z to A</option>
                         </select>
                     </div>
-
                     <button type="submit" class="bg-light-blue-gradient hover:bg-blue-300 text-gray-900 font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out w-full">
                         Apply Filters
                     </button>
                 </div>
             </form>
-
             <div class="md:col-span-3">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {% for product in data.products %}
                     <div class="product-item">
                         <span class="badge bg-success position-absolute m-3">-{{product.item_discount_percentage}}%</span>
-                        <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                        <a class="btn-wishlist wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
                         <figure>
                           <a href="{% url "item-detail" product.uuid %}" title="{{product.item_name}}">
                             {% if product.item_image.image %}
@@ -160,13 +149,13 @@
                             </span>
                         {% endif %}
                     </nav>
-
                 </div>
                 <div id="no-results" class="text-center text-gray-500 text-lg mt-6 hidden">No products found.</div>
             </div>
         </div>
     </div>
     <script src="{% static "js/add-to-cart.js" %}"></script>
+    <script src="{% static "js/add-to-wishlist.js" %}"></script>
     <script id="django-messages-data" type="application/json">
         [
         {% if messages %}

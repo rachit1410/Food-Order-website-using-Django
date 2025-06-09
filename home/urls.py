@@ -15,7 +15,11 @@ from home.views import (
     delete_collecton,
     list_collections,
     view_collection,
-    variant_detail
+    variant_detail,
+    remove_from_cart,
+    Wishlist,
+    remove_from_wishlist,
+    add_to_wishlist
 )
 
 urlpatterns = [
@@ -35,4 +39,8 @@ urlpatterns = [
     path("delete-collection/<pk>", delete_collecton, name="delete-collection"),
     path("list-collections/", list_collections, name="list-collections"),
     path("view-collection/<pk>", view_collection, name="view-collection"),
+    path("remove/<pk>", remove_from_cart, name="remove"),
+    path("wishlist/", Wishlist, name="wishlist"),
+    path("remove-w/<pk>", remove_from_wishlist, name="remove-w"),
+    path("add-to-wishlist/<pk>", add_to_wishlist, name="add-to-wishlist"),
 ]

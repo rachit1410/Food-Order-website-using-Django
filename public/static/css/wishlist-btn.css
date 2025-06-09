@@ -1,0 +1,37 @@
+.product-item .btn-wishlist {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  transition: all 0.3s ease-out;
+}
+.product-item .btn-wishlist:hover {
+  background: rgb(240, 56, 56);
+  color: #fff;
+}
+.product-item .btn-wishlist-s {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(240, 56, 56);
+  color: #fff;
+  transition: all 0.3s ease-out;
+}
+.product-item .btn-wishlist-s:hover {
+  background: #fff;
+  color: rgb(240, 56, 56);
+  border: 1px solid #d8d8d8;
+}
