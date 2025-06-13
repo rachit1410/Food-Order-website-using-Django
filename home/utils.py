@@ -8,9 +8,12 @@ import string
 import lorem
 import logging
 
-from home.models import Images, Category, SubCategory, Brand, Item, VariantItem, Cart
+from home.models import Images, Category, SubCategory, Brand, Item, VariantItem, Cart, MostSearched
 from accounts.models import Seller
 from home.models import Collection
+from uuid import UUID
+from django.db.models import Q
+from django.utils import timezone
 
 
 def save_image_from_url(image_url):
@@ -196,3 +199,83 @@ def is_wishlisted(request, product):
     if not user or not user.is_authenticated:
         return False
     return product.wishlists.filter(wishlist__customer__pk=user.pk).exists()
+
+
+def add_to_searched(query):
+    if MostSearched.objects.filter(search=query).exists():
+        searched = MostSearched.objects.filter(search=query)[0]
+        searched.times_searched += 1
+        searched.save()
+    else:
+        MostSearched.objects.create(
+            search=query
+        )
+
+
+def get_searched():
+    thirty_days_ago = timezone.now() - pd.Timedelta(days=30)
+    MostSearched.objects.filter(created_at__lt=thirty_days_ago).delete()
+    return MostSearched.objects.all().order_by("-times_searched")[:20]
+
+
+def cc():
+    try:
+        return Collection.objects.get(uuid=UUID("efdab293-897c-4b82-b082-16537f7ecf07"))
+    except Collection.DoesNotExist:
+        return None
+
+
+def cm():
+    try:
+        return Collection.objects.get(uuid=UUID("51db04da-2496-4c48-9004-a723cdfb7b00"))
+    except Collection.DoesNotExist:
+        return None
+
+
+def tc():
+    try:
+        return Collection.objects.get(uuid=UUID("a209e2e5-2c01-4b67-967b-6d359f00b333"))
+    except Collection.DoesNotExist:
+        return None
+
+
+def sd():
+    try:
+        return Collection.objects.get(uuid=UUID("90f63050-e150-4e24-9e2d-5e4956bbbec9"))
+    except Collection.DoesNotExist:
+        return None
+
+
+def ccc():
+    try:
+        return Collection.objects.filter(
+            Q(uuid=UUID("9e312a37-e078-48b8-ade2-8ec4fdcf528c")) |
+            Q(uuid=UUID("b1248e5c-ced0-4287-aed4-9c4ba9f47c5f")) |
+            Q(uuid=UUID("36e5a6a4-b57b-49af-8bae-cd076f450b8a"))
+        ).order_by("created_at")
+    except Collection.DoesNotExist:
+        return None
+
+
+def trendingItems():
+    items = Item.objects.filter(Q(item_subcategory__category__category="BAKERY, CAKES AND DAIRY") | Q(Q(item_subcategory__category__category="BEVERAGES"))).order_by("-rating")[:30]
+    catitems = {
+        "BAKERY, CAKES AND DAIRY": [],
+        "BEVERAGES": []
+    }
+    categories = Category.objects.filter(Q(category="BEVERAGES") | Q(category="BAKERY, CAKES AND DAIRY"))
+    for item in items:
+        category = item.item_subcategory.category.category
+        catitems[category].append(item)
+
+    return {"items": items, "catitems": catitems, "categories": categories}
+
+
+def most_popular():
+    items = Item.objects.all().order_by("-rating")[:8]
+    return items
+
+
+def just_arived():
+    items = Item.objects.filter(item_brand__brand__icontains="Fresho").order_by("-created_at")[:8]
+    return items

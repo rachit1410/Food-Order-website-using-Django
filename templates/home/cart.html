@@ -46,9 +46,9 @@
                 <span id="total-price" class="text-xl font-bold text-light-blue">₹{{cart.total_price}}</span>
             </div>
             <p class="text-sm text-gray-500 mb-4">Shipping costs will be calculated at checkout.</p>
-            <button onclick="checkout()" class="bg-light-blue-gradient hover:bg-blue-300 text-gray-900 font-semibold py-2 px-4 rounded-md w-full transition duration-300 ease-in-out">
-                Checkout
-            </button>
+            <a href="{% url "check-out" %}" class="text-decoration-none bg-light-blue-gradient hover:bg-blue-400 text-gray-900 font-semibold py-2 px-8 rounded-xl transition duration-300 ease-in-out w-full block text-center">
+              Checkout
+            </a>
             <div id="checkout-message" class="mt-4 text-center text-green-600 font-semibold hidden">
                 Checkout successful!
             </div>

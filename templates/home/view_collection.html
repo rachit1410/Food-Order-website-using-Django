@@ -31,7 +31,7 @@
                 {% for product in collection.items.all %}
                     <div class="product-item flex flex-col h-full">
                         <span class="badge bg-success position-absolute m-3">-{{product.item_discount_percentage}}%</span>
-                        <a href="#" class="btn-wishlist wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                        <aclass="btn-wishlist wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
                         <figure>
                           <a href="{% url "item-detail" product.uuid %}" title="{{product.item_name}}">
                             {% if product.item_image.image %}
@@ -63,7 +63,7 @@
                           </div>
                           <a class="nav-link addtocart-btn">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
                         </div>
-                      </div>
+                    </div>
                 {% empty %}
                 <p class="text-gray-500 text-center py-4 col-span-full">No products found in this collection.</p>
                 {% endfor %}

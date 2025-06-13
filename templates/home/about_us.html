@@ -1,6 +1,47 @@
 {% extends "base.html" %}
 
 {% block title %}About Us{% endblock %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static "css/about_us.css" %}">
+{% endblock %}
+
 {% block content %}
-    <h1>this is about us page</h1>
+    {% include "components/nav_bar.html" with filters=user %}
+
+    <section class="about-bg py-12 min-h-screen flex items-center">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <h1 class="about-title text-center">About FODE</h1>
+            <p class="text-lg text-gray-700 mb-8 text-center">
+                Welcome to <span class="font-bold text-green-700">FODE</span> – your one-stop online destination for groceries, fresh produce, and daily essentials. Inspired by the convenience and variety of Big Basket, FODE brings the supermarket to your doorstep with just a few clicks.
+            </p>
+            <div class="about-card">
+                <h2 class="about-section-title">Our Mission</h2>
+                <p class="text-gray-700">
+                    At FODE, our mission is to make grocery shopping easy, fast, and reliable for everyone. We are committed to providing a wide range of quality products at competitive prices, delivered safely and promptly to your home.
+                </p>
+            </div>
+            <div class="about-card">
+                <h2 class="about-section-title">Why Choose FODE?</h2>
+                <ul class="about-list text-gray-700">
+                    <li>Extensive selection of groceries, fresh fruits & vegetables, dairy, bakery, beverages, and more</li>
+                    <li>Easy-to-use website and seamless shopping experience</li>
+                    <li>Fast and reliable home delivery</li>
+                    <li>Secure payment options</li>
+                    <li>Dedicated customer support</li>
+                </ul>
+            </div>
+            <div class="about-card about-contact">
+                <h2 class="about-section-title">Contact Us</h2>
+                <p class="text-gray-700 mb-2">
+                    Have questions, feedback, or need help? Our team is here for you!
+                </p>
+                <ul class="text-gray-700">
+                    <li>Email: <a href="mailto:support@fode.com">support@fode.com</a></li>
+                    <li>Phone: <a href="tel:+911234567890">+91 12345 67890</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
 {% endblock %}

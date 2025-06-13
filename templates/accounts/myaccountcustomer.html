@@ -110,7 +110,7 @@
                         </div>
                         <div class="flex flex-col">
                             <label for="country" class="text-gray-700 font-medium">Country</label>
-                            <select id="country" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+                            <select id="country" name="country" class="mt-1 p-2 rounded-md bg-gray-50 text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">Select Country</option>
                                 <option value="India" {% if profile.address.country == "India" %}selected{% endif %}>India</option>
                                 <option value="USA" {% if profile.address.country == "USA" %}selected{% endif %}>USA</option>

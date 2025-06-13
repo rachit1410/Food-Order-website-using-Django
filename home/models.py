@@ -17,6 +17,7 @@ class Base(models.Model):
 
 class Category(Base):
     category = models.CharField(max_length=255, unique=True)
+    category_icon = models.FileField(null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -60,7 +61,7 @@ class Item(Base):
     item_discount_percentage = models.IntegerField(default=0)
     item_subcategory = models.ForeignKey(SubCategory, related_name="items", on_delete=models.SET_NULL, null=True, blank=True)
     item_brand = models.ForeignKey(Brand, related_name="brand_items", on_delete=models.CASCADE)
-    rating = models.FloatField(default=5.0)
+    rating = models.FloatField(default=1.0)
     quantity = models.CharField(max_length=255)
 
     def __str__(self):
@@ -147,13 +148,20 @@ class Status(Base):
 
 class CustomerOrder(Base):
     customer = models.ForeignKey(Customer, related_name="my_orders", on_delete=models.CASCADE)
-    items = models.ManyToManyField(Item, related_name="orders")
     status = models.ForeignKey(Status, related_name='order_status', on_delete=models.SET_NULL, null=True, blank=True)
-    order_date = models.DateTimeField(auto_now_add=True)
-    total_amount = models.FloatField(default=0.00)
+    total_amount = models.IntegerField(default=0)
 
     def __str__(self):
         return f"Order {self.uuid} by {self.customer.username}"
+
+
+class OrderItem(Base):
+    item = models.ForeignKey(Item, related_name="item_in_orders", on_delete=models.CASCADE)
+    order = models.ForeignKey(CustomerOrder, related_name="order_items", on_delete=models.CASCADE)
+    total_price = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"item {self.item.item_name} Ordered by {self.order.customer.username}"
 
 
 class Collection(Base):
@@ -165,3 +173,8 @@ class Collection(Base):
 
     def __str__(self):
         return self.collection_name
+
+
+class MostSearched(Base):
+    search = models.CharField(max_length=225)
+    times_searched = models.IntegerField(default=1)

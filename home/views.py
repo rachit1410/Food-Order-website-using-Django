@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from home.utils import get_is_seller, get_discounted_price, get_all_collections, get_cart_total, is_wishlisted
-from home.models import (Collection, Category, Brand, SubCategory, Images, Item, VariantItem, Reviews, Cart, CartItem, WishList, WishlistItems)
-from accounts.models import Seller
+from home.utils import (get_is_seller, get_discounted_price, get_all_collections,
+                        get_cart_total, is_wishlisted, cc, cm, tc, sd, ccc,
+                        add_to_searched, get_searched, trendingItems, most_popular,
+                        just_arived)
+from home.models import (Collection, Category, Brand, SubCategory, Images, Item,
+                         VariantItem, Reviews, Cart, CartItem, WishList, WishlistItems)
+from accounts.models import Seller, Customer
 from home.documents import ItemDocument
 from elasticsearch_dsl import Q
 from uuid import UUID
@@ -10,8 +14,10 @@ from django.contrib import messages
 from django.http import JsonResponse
 import json
 from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 
+@cache_page(60*15)
 def home(request):
     is_seller = None
     is_logged_in = request.user.is_authenticated
@@ -19,28 +25,43 @@ def home(request):
         is_seller = get_is_seller(request)
 
     list_categories = Category.objects.all().order_by('category')
-    cc = Collection.objects.get(uuid=UUID("efdab293-897c-4b82-b082-16537f7ecf07"))
-    cm = Collection.objects.get(uuid=UUID("51db04da-2496-4c48-9004-a723cdfb7b00"))
     context = {
         'is_logged_in': is_logged_in,
         'is_seller': is_seller,
+        'cart_total': get_cart_total(request),
         'query': {
             "categories": list_categories
         },
         'data': {
           'collections': get_all_collections(),
           'featured': {
-              'cc': cc,
-              "cm": cm
-          }
+              'cc': cc(),
+              "cm": cm(),
+              "tc": tc(),
+              "sd": sd(),
+              "ccc": ccc(),
+              "trending": trendingItems(),
+              "most_popular": most_popular(),
+              "just_arived": just_arived(),
+          },
+          'most_searches': get_searched()
         }
     }
-
     return render(request, "home/home.html", context)
 
 
 def about_us(request):
-    return render(request, "home/about_us.html")
+
+    context = {
+        "user": {
+            "is_seller": get_is_seller(request),
+            "is_logged_in": request.user.is_authenticated,
+            "categories": Category.objects.all(),
+            "cart_total": get_cart_total(request)
+        },
+    }
+
+    return render(request, "home/about_us.html", context)
 
 
 def contact_us(request):
@@ -139,7 +160,9 @@ def search_filter(request):
         if cache.get(searched):
             search = cache.get(searched)
         else:
-            search = search.query(
+            cache.set(searched, search, 60*10)
+
+        search = search.query(
                 Q(
                     "multi_match",
                     query=searched,
@@ -154,7 +177,8 @@ def search_filter(request):
                     fuzziness="AUTO"
                     )
                 )
-            cache.set(searched, search, 60*10)
+        # adding to recent searches
+        add_to_searched(searched)
 
     if category != "":
         search = search.filter("match", item_subcategory__category__category=category)
@@ -250,8 +274,41 @@ def search_filter(request):
     return render(request, "home/search_filter.html", context)
 
 
+@login_required(login_url="login")
 def check_out(request):
-    return render(request, "home/check_out.html")
+    if request.method == "POST":
+        payment_method = request.POST.get("payment-method")
+
+        if payment_method == "upi":
+            return redirect("upi-gateway")
+        elif payment_method == "card":
+            return redirect("card-gateway")
+        elif payment_method == "cod":
+            return redirect("thank-you")
+        else:
+            return redirect("check-out")
+
+    try:
+        customer = Customer.objects.get(pk=request.user.pk)
+        cart = Cart.objects.get(customer=customer)
+        if cart.cart_items.all().count() == 0:
+            return redirect("my-cart")
+
+        context = {
+            "customer": customer,
+            "cart": cart,
+            "user": {
+                "categories": Category.objects.all(),
+                "is_seller": get_is_seller(request),
+                "is_logged_in": True
+            }
+        }
+
+    except Exception as e:
+        print(e)
+        messages.error(request, "something went wrong. please try again later")
+        return redirect("my-cart")
+    return render(request, "home/check_out.html", context)
 
 
 def card_pay(request):
@@ -266,6 +323,11 @@ def upi_pay(request):
 def cart(request):
     try:
         cart = Cart.objects.get(customer__id=request.user.id)
+
+        if cart.cart_items.all().count() == 0:
+            cart.total_price = 0
+            cart.save()
+
         context = {
             "cart": cart,
             "user": {
@@ -305,7 +367,8 @@ def Wishlist(request):
             "user": {
                 "is_seller": get_is_seller(request),
                 "is_logged_in": True,
-                "categories": Category.objects.all()
+                "categories": Category.objects.all(),
+                "cart_total": get_cart_total(request)
             }
         }
         return render(request, "home/wishlist.html", context)
@@ -440,6 +503,7 @@ def create_collection(request):
     return redirect("home")
 
 
+@login_required(login_url="login")
 def delete_collecton(request, pk):
     uuid = UUID(pk)
     collection = Collection.objects.get(pk=uuid)
@@ -454,6 +518,7 @@ def delete_collecton(request, pk):
     return redirect("manage-collections")
 
 
+@login_required(login_url="login")
 def list_collections(request):
     is_logged_in = request.user.is_authenticated
     is_seller = get_is_seller(request)
